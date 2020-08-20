@@ -38,3 +38,9 @@ jobs:
         VERSION: "master"
       run: |
         bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/build_script.sh)"
+    - name: Upload Agent .dmg
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ github.event.inputs.release_version }}-dmg
+        path: |
+          ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg
