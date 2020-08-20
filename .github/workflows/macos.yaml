@@ -1,0 +1,40 @@
+name: MacOS Agent build
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_version:
+        description: 'release.json version to target'
+        required: true
+        default: 'nightly-a7'
+      agent_major_version:
+        description: 'Major version of the Agent to build'
+        required: true
+        default: '7'
+      python_runtimes:
+        description: 'Included python runtimes in the build'
+        required: true
+        default: '3'
+      buildimages_version: 
+        description: 'datadog-agent-buildimages commit used to setup the builder'
+        required: true
+        default: "a8226a8e78774afad285e7372fe8c6c179340dd9"
+
+jobs:
+  macos_build:
+    runs-on: macos-10.15
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Set up builder
+      run: |
+        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/builder_setup.sh)"
+    - name: Run omnibus build
+      env:
+        RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+        AGENT_MAJOR_VERSION: ${{ github.event.inputs.agent_major_version }}
+        PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes }}
+        VERSION: "master"
+      run: |
+        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/build_script.sh)"
