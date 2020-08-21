@@ -27,9 +27,10 @@ jobs:
       run:
         shell: bash
     steps:
-    - name: Remove gettext brew package
+    - name: Remove unneeded brew package
       run: |
-        brew remove gettext
+        brew uninstall --ignore-dependencies git glib gnupg gnutls libidn2 php subversion wget gettext
+
     - name: Set up builder
       run: |
         bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/builder_setup.sh)"
