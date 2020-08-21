@@ -27,6 +27,9 @@ jobs:
       run:
         shell: bash
     steps:
+    - name: List installed brew packages
+      run: |
+        brew list
     - name: Set up builder
       run: |
         bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/builder_setup.sh)"
