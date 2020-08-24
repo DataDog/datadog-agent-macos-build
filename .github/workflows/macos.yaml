@@ -27,9 +27,9 @@ jobs:
       run:
         shell: bash
     steps:
-    - name: Remove unneeded brew package
+    - name: Remove preinstalled brew packages
       run: |
-        brew uninstall --ignore-dependencies git glib gnupg gnutls libidn2 php subversion wget gettext
+        brew remove --force $(brew list)
 
     - name: Set up builder
       run: |
