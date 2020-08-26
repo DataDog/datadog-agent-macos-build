@@ -3,6 +3,10 @@ name: MacOS Agent build
 on:
   workflow_dispatch:
     inputs:
+      git_ref:
+        description: 'git_ref on datadog-agent to target'
+        required: true
+        default: 'master'
       release_version:
         description: 'release.json version to target'
         required: true
@@ -18,7 +22,7 @@ on:
       buildimages_version: 
         description: 'datadog-agent-buildimages commit used to setup the builder'
         required: true
-        default: "a8226a8e78774afad285e7372fe8c6c179340dd9"
+        default: "master"
 
 jobs:
   macos_build:
@@ -34,14 +38,58 @@ jobs:
     - name: Set up builder
       run: |
         bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/builder_setup.sh)"
+
+    - name: Add certificates to temporary keychain
+      env:
+        CODESIGNING_CERT_BASE64: ${{ secrets.CODESIGNING_CERT_B64 }}
+        CODESIGNING_CERT_PASSPHRASE: ${{ secrets.CODESIGNING_CERT_PASSPHRASE }}
+        INSTALLER_CERT_BASE64: ${{ secrets.INSTALLER_CERT_B64 }}
+        INSTALLER_CERT_PASSPHRASE: ${{ secrets.INSTALLER_CERT_PASSPHRASE }}
+      run: |
+        # Create temporary build keychain, add it to the list of active keychains
+        export KEYCHAIN_PASSPHRASE=$(LC_CTYPE=C tr -dc '[A-Za-z0-9]' < /dev/urandom | fold -w 24 | head -n1)
+        security create-keychain -p "$KEYCHAIN_PASSPHRASE" "build.keychain"
+        security list-keychains -d user -s "build.keychain" "login.keychain"
+
+        security unlock-keychain -p "$KEYCHAIN_PASSPHRASE" "build.keychain"
+
+        echo "$CODESIGNING_CERT_BASE64" | base64 -d > ~/codesigning_cert.p12
+        echo "$INSTALLER_CERT_BASE64" | base64 -d > ~/installer_cert.p12
+
+        # Import codesigning cert, only allow codesign to use it without confirmation
+        security import ~/codesigning_cert.p12 -f pkcs12 -P "$CODESIGNING_CERT_PASSPHRASE" -k "build.keychain" -T /usr/bin/codesign
+        rm -f ~/codesigning_cert.p12
+
+        # Import installer cert, only allow productbuild to use it without confirmation
+        security import ~/installer_cert.p12 -f pkcs12 -P "$INSTALLER_CERT_PASSPHRASE" -k "build.keychain" -T /usr/bin/productbuild
+        rm -f ~/installer_cert.p12
+
+        # Update the key partition list
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSPHRASE" "build.keychain"
+
     - name: Run omnibus build
       env:
+        VERSION: ${{ github.event.inputs.git_ref }}
         RELEASE_VERSION: ${{ github.event.inputs.release_version }}
         AGENT_MAJOR_VERSION: ${{ github.event.inputs.agent_major_version }}
         PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes }}
-        VERSION: "master"
+        SIGN: "true"
       run: |
         bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/build_script.sh)"
+
+    - name: Notarize build
+      env:
+        RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+        APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
+        NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
+      run: |
+        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/notarization_script.sh)"
+
+    - name: Delete temporary keychain
+      if: ${{ always() }}
+      run: |
+        security delete-keychain "build.keychain"
+
     - name: Upload Agent .dmg
       uses: actions/upload-artifact@v2
       with:
