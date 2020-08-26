@@ -3,8 +3,8 @@ name: MacOS Agent build
 on:
   workflow_dispatch:
     inputs:
-      git_ref:
-        description: 'git_ref on datadog-agent to target'
+      datadog_agent_ref:
+        description: 'git ref to target on datadog-agent'
         required: true
         default: 'master'
       release_version:
@@ -19,8 +19,8 @@ on:
         description: 'Included python runtimes in the build'
         required: true
         default: '3'
-      buildimages_version: 
-        description: 'datadog-agent-buildimages commit used to setup the builder'
+      buildimages_ref:
+        description: 'datadog-agent-buildimages ref used to setup the builder'
         required: true
         default: "master"
 
@@ -37,7 +37,7 @@ jobs:
 
     - name: Set up builder
       run: |
-        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/builder_setup.sh)"
+        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_ref }}/macos/builder_setup.sh)"
 
     - name: Add certificates to temporary keychain
       env:
@@ -69,13 +69,13 @@ jobs:
 
     - name: Run omnibus build
       env:
-        VERSION: ${{ github.event.inputs.git_ref }}
+        VERSION: ${{ github.event.inputs.datadog_agent_ref }}
         RELEASE_VERSION: ${{ github.event.inputs.release_version }}
         AGENT_MAJOR_VERSION: ${{ github.event.inputs.agent_major_version }}
         PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes }}
         SIGN: "true"
       run: |
-        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/build_script.sh)"
+        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_ref }}/macos/build_script.sh)"
 
     - name: Notarize build
       env:
@@ -83,7 +83,7 @@ jobs:
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
       run: |
-        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_version }}/macos/notarization_script.sh)"
+        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_ref }}/macos/notarization_script.sh)"
 
     - name: Delete temporary keychain
       if: ${{ always() }}
