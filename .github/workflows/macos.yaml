@@ -5,23 +5,23 @@ on:
     inputs:
       datadog_agent_ref:
         description: 'git ref to target on datadog-agent'
-        required: true
+        required: false
         default: 'master'
       release_version:
         description: 'release.json version to target'
-        required: true
+        required: false
         default: 'nightly-a7'
       agent_major_version:
         description: 'Major version of the Agent to build'
-        required: true
+        required: false
         default: '7'
       python_runtimes:
         description: 'Included python runtimes in the build'
-        required: true
+        required: false
         default: '3'
       buildimages_ref:
         description: 'datadog-agent-buildimages ref used to setup the builder'
-        required: true
+        required: false
         default: "master"
 
 jobs:
