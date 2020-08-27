@@ -73,6 +73,7 @@ jobs:
         RELEASE_VERSION: ${{ github.event.inputs.release_version }}
         AGENT_MAJOR_VERSION: ${{ github.event.inputs.agent_major_version }}
         PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes }}
+        KEYCHAIN_NAME: "build.keychain"
         SIGN: "true"
       run: |
         bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_ref }}/macos/build_script.sh)"
