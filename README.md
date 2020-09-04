@@ -10,6 +10,5 @@ The scripts in this folder are made to create a build environment for the MacOS 
 ## Contents
 
 - `builder_setup.sh`: installs all required build dependencies
-- `certificate_setup.sh`: installs the developer certificates in keychain & allow automatic access to code-signing applications. Only needed if you want to sign the resulting package.
 - `build_script.sh`: does the omnibus build of the Agent.
 - `notarization_script.sh` notarizes an Agent build. Will only work if the package was signed.
