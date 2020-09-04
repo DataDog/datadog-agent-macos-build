@@ -19,10 +19,6 @@ on:
         description: 'Included python runtimes in the build'
         required: false
         default: '3'
-      buildimages_ref:
-        description: 'datadog-agent-buildimages ref used to setup the builder'
-        required: false
-        default: "master"
 
 jobs:
   macos_build:
@@ -37,7 +33,7 @@ jobs:
 
     - name: Set up builder
       run: |
-        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_ref }}/macos/builder_setup.sh)"
+        bash ./builder_setup.sh
 
     - name: Add certificates to temporary keychain
       env:
@@ -76,7 +72,7 @@ jobs:
         KEYCHAIN_NAME: "build.keychain"
         SIGN: "true"
       run: |
-        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_ref }}/macos/build_script.sh)"
+        bash ./build_script.sh
 
     - name: Notarize build
       env:
@@ -84,7 +80,7 @@ jobs:
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
       run: |
-        bash -c "$(curl -L https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/${{ github.event.inputs.buildimages_ref }}/macos/notarization_script.sh)"
+        bash ./notarization_script.sh
 
     - name: Delete temporary keychain
       if: ${{ always() }}
