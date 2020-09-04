@@ -29,6 +29,16 @@ jobs:
     steps:
     - name: Remove preinstalled brew packages
       run: |
+        # The base box ships a few things that can have unwanted effects on the MacOS build.
+        # For instance, we compile Python in the pipeline. If Python finds some libraries while
+        # it's being compiled, then it will add a dynamic link to them and add some features.
+        # In this particular case, Python sees that there is libintl.8.dylib (provided by the gettext brew package)
+        # in the default include path, thus links to it. However, that's not something we need, so we don't actually
+        # ship that library in the MacOS package. Since we have a feature to make a build fail if we depend on
+        # something we don't ship, this made the build fail (see: https://github.com/DataDog/datadog-agent-macos-build/runs/1011733463?check_suite_focus=true).
+
+        # In order to avoid such cases in the future where we use things we didn't expect to, we'd rather
+        # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
         brew remove --force $(brew list)
 
     - name: Set up builder
@@ -43,12 +53,21 @@ jobs:
         INSTALLER_CERT_PASSPHRASE: ${{ secrets.INSTALLER_CERT_PASSPHRASE }}
       run: |
         # Create temporary build keychain, add it to the list of active keychains
+        # The passphrase value doesn't really matter: we create a new temporary keychain every build,
+        # the build uses it, and then we destroy it at the end of the build (+ the VM is supposed to be destroyed at the end too).
+        # We (humans) don't need to know the passphrase of this keychain, and it doesn't need to be kept
+        # across builds because we'll be in a new environment each time.
         export KEYCHAIN_PASSPHRASE=$(LC_CTYPE=C tr -dc '[A-Za-z0-9]' < /dev/urandom | fold -w 24 | head -n1)
         security create-keychain -p "$KEYCHAIN_PASSPHRASE" "build.keychain"
         security list-keychains -d user -s "build.keychain" "login.keychain"
 
         security unlock-keychain -p "$KEYCHAIN_PASSPHRASE" "build.keychain"
 
+        # Apple has two different kinds of certificates:
+        # - code signing certificates, to sign binaries.
+        # - installer certificates, to sign the .pkg archive.
+        # We use both, because having signed binaries & a signed installer is a prerequisite to
+        # have an app notarized by Apple.
         echo "$CODESIGNING_CERT_BASE64" | base64 -d > ~/codesigning_cert.p12
         echo "$INSTALLER_CERT_BASE64" | base64 -d > ~/installer_cert.p12
 
@@ -61,6 +80,12 @@ jobs:
         rm -f ~/installer_cert.p12
 
         # Update the key partition list
+        # Since MacOS Sierra, this line is needed to "apply" the security import changes above
+        # (namely the changes that allow using codesign and productbuild without user prompts)
+        # See: https://stackoverflow.com/questions/39868578/security-codesign-in-sierra-keychain-ignores-access-control-settings-and-ui-p
+        #      https://stackoverflow.com/questions/43002579/after-set-key-partition-list-codesign-still-prompts-for-key-access/43002580
+        # for reference.
+        # Note: this feature is badly documented (and doesn't even appear in the command list if you run security --help...).
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSPHRASE" "build.keychain"
 
     - name: Run omnibus build
