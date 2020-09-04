@@ -5,7 +5,7 @@
 # which are then used by the build script.
 
 # Prerequisites:
-# - A MacOS 10.13.6 (High Sierra) box
+# - A MacOS 10.13.6 (High Sierra) or higher box
 
 export GO_VERSION=1.14.7
 export RUBY_VERSION=2.4
