@@ -43,7 +43,7 @@ jobs:
 
     - name: Set up builder
       run: |
-        bash ./builder_setup.sh
+        bash ./datadog-agent-buildimages/macos/builder_setup.sh
 
     - name: Add certificates to temporary keychain
       env:
@@ -97,7 +97,7 @@ jobs:
         KEYCHAIN_NAME: "build.keychain"
         SIGN: "true"
       run: |
-        bash ./build_script.sh
+        bash ./datadog-agent-buildimages/macos/build_script.sh
 
     - name: Notarize build
       env:
@@ -105,7 +105,7 @@ jobs:
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
       run: |
-        bash ./notarization_script.sh
+        bash ./datadog-agent-buildimages/macos/notarization_script.sh
 
     - name: Delete temporary keychain
       if: ${{ always() }}
