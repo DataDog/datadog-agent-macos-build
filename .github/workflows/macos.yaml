@@ -86,7 +86,8 @@ jobs:
         #      https://stackoverflow.com/questions/43002579/after-set-key-partition-list-codesign-still-prompts-for-key-access/43002580
         # for reference.
         # Note: this feature is badly documented (and doesn't even appear in the command list if you run security --help...).
-        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSPHRASE" "build.keychain"
+        # Note: we silence the output of this command because it contains metadata about the certificates.
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSPHRASE" "build.keychain" &>/dev/null
 
     - name: Run omnibus build
       env:
