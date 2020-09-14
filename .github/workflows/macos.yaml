@@ -27,6 +27,11 @@ jobs:
       run:
         shell: bash
     steps:
+    - name: Checkout with submodules
+      uses: actions/checkout@v2
+      with:
+        submodules: 'true'
+
     - name: Remove preinstalled brew packages
       run: |
         # The base box ships a few things that can have unwanted effects on the MacOS build.
@@ -51,17 +56,19 @@ jobs:
         CODESIGNING_CERT_PASSPHRASE: ${{ secrets.CODESIGNING_CERT_PASSPHRASE }}
         INSTALLER_CERT_BASE64: ${{ secrets.INSTALLER_CERT_B64 }}
         INSTALLER_CERT_PASSPHRASE: ${{ secrets.INSTALLER_CERT_PASSPHRASE }}
+        KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
       run: |
-        # Create temporary build keychain, add it to the list of active keychains
-        # The passphrase value doesn't really matter: we create a new temporary keychain every build,
-        # the build uses it, and then we destroy it at the end of the build (+ the VM is supposed to be destroyed at the end too).
-        # We (humans) don't need to know the passphrase of this keychain, and it doesn't need to be kept
-        # across builds because we'll be in a new environment each time.
-        export KEYCHAIN_PASSPHRASE=$(LC_CTYPE=C tr -dc '[A-Za-z0-9]' < /dev/urandom | fold -w 24 | head -n1)
-        security create-keychain -p "$KEYCHAIN_PASSPHRASE" "build.keychain"
+        # Create temporary build keychain
+        security create-keychain -p "$KEYCHAIN_PWD" "build.keychain"
+
+        # Let the keychain stay unlocked for 6 hours, otherwise the OS might lock
+        # it again after a period of inactivity.
+        security set-keychain-settings -lut 21600 "build.keychain"
+
+        # Add the build keychain to the list of active keychains
         security list-keychains -d user -s "build.keychain" "login.keychain"
 
-        security unlock-keychain -p "$KEYCHAIN_PASSPHRASE" "build.keychain"
+        security unlock-keychain -p "$KEYCHAIN_PWD" "build.keychain"
 
         # Apple has two different kinds of certificates:
         # - code signing certificates, to sign binaries.
@@ -72,11 +79,11 @@ jobs:
         echo "$INSTALLER_CERT_BASE64" | base64 -d > ~/installer_cert.p12
 
         # Import codesigning cert, only allow codesign to use it without confirmation
-        security import ~/codesigning_cert.p12 -f pkcs12 -P "$CODESIGNING_CERT_PASSPHRASE" -k "build.keychain" -T /usr/bin/codesign
+        security import ~/codesigning_cert.p12 -f pkcs12 -P "$CODESIGNING_CERT_PASSPHRASE" -k "build.keychain" -T "/usr/bin/codesign"
         rm -f ~/codesigning_cert.p12
 
         # Import installer cert, only allow productbuild to use it without confirmation
-        security import ~/installer_cert.p12 -f pkcs12 -P "$INSTALLER_CERT_PASSPHRASE" -k "build.keychain" -T /usr/bin/productbuild
+        security import ~/installer_cert.p12 -f pkcs12 -P "$INSTALLER_CERT_PASSPHRASE" -k "build.keychain" -T "/usr/bin/productbuild"
         rm -f ~/installer_cert.p12
 
         # Update the key partition list
@@ -87,7 +94,7 @@ jobs:
         # for reference.
         # Note: this feature is badly documented (and doesn't even appear in the command list if you run security --help...).
         # Note: we silence the output of this command because it contains metadata about the certificates.
-        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSPHRASE" "build.keychain" &>/dev/null
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PWD" "build.keychain" &>/dev/null
 
     - name: Run omnibus build
       env:
@@ -96,6 +103,7 @@ jobs:
         AGENT_MAJOR_VERSION: ${{ github.event.inputs.agent_major_version }}
         PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes }}
         KEYCHAIN_NAME: "build.keychain"
+        KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
         SIGN: "true"
       run: |
         bash ./datadog-agent-buildimages/macos/build_script.sh
