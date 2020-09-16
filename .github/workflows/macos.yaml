@@ -61,9 +61,9 @@ jobs:
         # Create temporary build keychain
         security create-keychain -p "$KEYCHAIN_PWD" "build.keychain"
 
-        # Let the keychain stay unlocked for 6 hours, otherwise the OS might lock
+        # Let the keychain stay unlocked for 2 hours, otherwise the OS might lock
         # it again after a period of inactivity.
-        security set-keychain-settings -lut 21600 "build.keychain"
+        security set-keychain-settings -lut 7200 "build.keychain"
 
         # Add the build keychain to the list of active keychains
         security list-keychains -d user -s "build.keychain" "login.keychain"
