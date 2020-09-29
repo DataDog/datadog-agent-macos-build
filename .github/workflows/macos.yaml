@@ -107,6 +107,7 @@ jobs:
         SIGN: "true"
       run: |
         bash ./datadog-agent-buildimages/macos/build_script.sh
+        ls -la ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/
 
     - name: Upload Agent .dmg
       uses: actions/upload-artifact@v2
