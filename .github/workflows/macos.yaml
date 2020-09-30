@@ -46,9 +46,23 @@ jobs:
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
         brew remove --force $(brew list)
 
+    - name: Cache brew deps
+      uses: actions/cache@v2
+      with:
+        path: |
+          /usr/local/Cellar
+          /usr/local/Homebrew
+          /usr/local/Frameworks
+          /usr/local/bin
+          /usr/lib/python*
+          /usr/local/opt
+          /usr/local/lib
+        key: macos-build-${{ hashFiles('./datadog-agent-buildimages/macos/builder_setup.sh') }}
+
     - name: Set up builder
       run: |
         bash ./datadog-agent-buildimages/macos/builder_setup.sh
+
 
     - name: Add certificates to temporary keychain
       env:
