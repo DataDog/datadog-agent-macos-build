@@ -32,9 +32,9 @@ jobs:
       with:
         submodules: 'true'
 
-    - name: Choose XCode 11.2
+    - name: Choose XCode 11.7
       run: |
-        sudo xcode-select -s /Applications/Xcode_11.2.1.app
+        sudo xcode-select -s /Applications/Xcode_11.7.app
 
     - name: Remove preinstalled brew packages
       run: |
@@ -77,7 +77,7 @@ jobs:
 
         go get github.com/DataDog/datadog-agent || true
         cd $GOPATH/src/github.com/Datadog/datadog-agent
-        git checkout 7.23.0
+        git checkout ff5694619fffeaeb8f9d06eccb724e88a67065c4
 
     - name: Install python deps & clang-format
       run: |
