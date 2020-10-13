@@ -50,80 +50,42 @@ jobs:
       run: |
         bash ./datadog-agent-buildimages/macos/builder_setup.sh
 
-    - name: Add certificates to temporary keychain
-      env:
-        CODESIGNING_CERT_BASE64: ${{ secrets.CODESIGNING_CERT_B64 }}
-        CODESIGNING_CERT_PASSPHRASE: ${{ secrets.CODESIGNING_CERT_PASSPHRASE }}
-        INSTALLER_CERT_BASE64: ${{ secrets.INSTALLER_CERT_B64 }}
-        INSTALLER_CERT_PASSPHRASE: ${{ secrets.INSTALLER_CERT_PASSPHRASE }}
-        KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
+    - name: Prep repo
       run: |
-        # Create temporary build keychain
-        security create-keychain -p "$KEYCHAIN_PWD" "build.keychain"
+        source ~/.build_setup
 
-        # Let the keychain stay unlocked for 2 hours, otherwise the OS might lock
-        # it again after a period of inactivity.
-        security set-keychain-settings -lut 7200 "build.keychain"
+        go get github.com/DataDog/datadog-agent
+        cd $GOPATH/src/github.com/Datadog/datadog-agent
+        git checkout 7.23.0 
 
-        # Add the build keychain to the list of active keychains
-        security list-keychains -d user -s "build.keychain" "login.keychain"
-
-        security unlock-keychain -p "$KEYCHAIN_PWD" "build.keychain"
-
-        # Apple has two different kinds of certificates:
-        # - code signing certificates, to sign binaries.
-        # - installer certificates, to sign the .pkg archive.
-        # We use both, because having signed binaries & a signed installer is a prerequisite to
-        # have an app notarized by Apple.
-        echo "$CODESIGNING_CERT_BASE64" | base64 -d > ~/codesigning_cert.p12
-        echo "$INSTALLER_CERT_BASE64" | base64 -d > ~/installer_cert.p12
-
-        # Import codesigning cert, only allow codesign to use it without confirmation
-        security import ~/codesigning_cert.p12 -f pkcs12 -P "$CODESIGNING_CERT_PASSPHRASE" -k "build.keychain" -T "/usr/bin/codesign"
-        rm -f ~/codesigning_cert.p12
-
-        # Import installer cert, only allow productbuild to use it without confirmation
-        security import ~/installer_cert.p12 -f pkcs12 -P "$INSTALLER_CERT_PASSPHRASE" -k "build.keychain" -T "/usr/bin/productbuild"
-        rm -f ~/installer_cert.p12
-
-        # Update the key partition list
-        # Since MacOS Sierra, this line is needed to "apply" the security import changes above
-        # (namely the changes that allow using codesign and productbuild without user prompts)
-        # See: https://stackoverflow.com/questions/39868578/security-codesign-in-sierra-keychain-ignores-access-control-settings-and-ui-p
-        #      https://stackoverflow.com/questions/43002579/after-set-key-partition-list-codesign-still-prompts-for-key-access/43002580
-        # for reference.
-        # Note: this feature is badly documented (and doesn't even appear in the command list if you run security --help...).
-        # Note: we silence the output of this command because it contains metadata about the certificates.
-        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PWD" "build.keychain" &>/dev/null
-
-    - name: Run omnibus build
-      env:
-        VERSION: ${{ github.event.inputs.datadog_agent_ref }}
-        RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-        AGENT_MAJOR_VERSION: ${{ github.event.inputs.agent_major_version }}
-        PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes }}
-        KEYCHAIN_NAME: "build.keychain"
-        KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
-        SIGN: "true"
+    - name: Install python deps & clang-format
       run: |
-        bash ./datadog-agent-buildimages/macos/build_script.sh
+        cd $GOPATH/src/github.com/Datadog/datadog-agent
+        brew install clang-format
+        python3 -m pip install -r requirements.txt
 
-    - name: Upload Agent .dmg
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.event.inputs.release_version }}-dmg
-        path: |
-          ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg
-
-    - name: Notarize build
-      env:
-        RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-        APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
-        NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
+    - name: Compile rtloader
       run: |
-        bash ./datadog-agent-buildimages/macos/notarization_script.sh
+        source ~/.build_setup
+        cd $GOPATH/src/github.com/Datadog/datadog-agent
+        inv rtloader.make --install-prefix=$GOPATH/src/github.com/DataDog/datadog-agent/dev
+        inv rtloader.install
 
-    - name: Delete temporary keychain
-      if: ${{ always() }}
+    - name: Lint rtloader
       run: |
-        security delete-keychain "build.keychain"
+        source ~/.build_setup
+        cd $GOPATH/src/github.com/Datadog/datadog-agent
+        inv rtloader.format --raise-if-changed
+
+    - name: Test rtloader
+      run: |
+        source ~/.build_setup
+        cd $GOPATH/src/github.com/Datadog/datadog-agent
+        inv rtloader.test
+
+    - name: Run tests
+      run: |
+        source ~/.build_setup
+        cd $GOPATH/src/github.com/Datadog/datadog-agent
+        inv -e deps
+        inv -e test --python-runtimes 3 --coverage --race --profile --fail-on-fmt --cpus 3
