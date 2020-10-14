@@ -32,9 +32,9 @@ jobs:
       with:
         submodules: 'true'
 
-    - name: Choose XCode 10.3.0
+    - name: Choose XCode 11.2.1
       run: |
-        sudo xcode-select -s /Applications/Xcode_10.3.0.app
+        sudo xcode-select -s /Applications/Xcode_11.2.1.app
 
     - name: Remove preinstalled brew packages
       run: |
@@ -65,7 +65,7 @@ jobs:
           /usr/local/bin
           /usr/local/opt
           /usr/local/lib/python3.8
-        key: macos-build-cache-10.3-${{ hashFiles('./datadog-agent-buildimages/macos/builder_setup.sh') }}
+        key: macos-build-cache-11.2-${{ hashFiles('./datadog-agent-buildimages/macos/builder_setup.sh') }}
 
     - name: Set up builder
       run: |
