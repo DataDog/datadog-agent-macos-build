@@ -32,9 +32,9 @@ jobs:
       with:
         submodules: 'true'
 
-    - name: Choose XCode 11.2.1
+    - name: Choose XCode 11.7
       run: |
-        sudo xcode-select -s /Applications/Xcode_11.2.1.app
+        sudo xcode-select -s /Applications/Xcode_11.7.app
 
     - name: Remove preinstalled brew packages
       run: |
@@ -65,7 +65,7 @@ jobs:
           /usr/local/bin
           /usr/local/opt
           /usr/local/lib/python3.8
-        key: macos-build-cache-11.2-${{ hashFiles('./datadog-agent-buildimages/macos/builder_setup.sh') }}
+        key: macos-build-cache-${{ hashFiles('./datadog-agent-buildimages/macos/builder_setup.sh') }}
 
     - name: Set up builder
       run: |
@@ -86,12 +86,10 @@ jobs:
         brew install clang-format
         python3 -m pip install -r requirements.txt
 
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-
     - name: Compile rtloader
       run: |
         source ~/.build_setup
+        eval `gimme 1.13.11`
         cd $GOPATH/src/github.com/Datadog/datadog-agent
         inv rtloader.make --install-prefix=$GOPATH/src/github.com/DataDog/datadog-agent/dev
         inv rtloader.install
@@ -99,18 +97,21 @@ jobs:
     - name: Lint rtloader
       run: |
         source ~/.build_setup
+        eval `gimme 1.13.11`
         cd $GOPATH/src/github.com/Datadog/datadog-agent
         inv rtloader.format --raise-if-changed
 
     - name: Test rtloader
       run: |
         source ~/.build_setup
+        eval `gimme 1.13.11`
         cd $GOPATH/src/github.com/Datadog/datadog-agent
         inv rtloader.test
 
     - name: Run tests
       run: |
         source ~/.build_setup
+        eval `gimme 1.13.11`
         cd $GOPATH/src/github.com/Datadog/datadog-agent
         inv -e deps
         inv -e test --python-runtimes 3 --coverage --race --profile --fail-on-fmt --cpus 3
