@@ -46,6 +46,23 @@ jobs:
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
         brew remove --force $(brew list)
 
+    - name: Cache brew deps
+      uses: actions/cache@v2
+      with:
+        # Paths to cache:
+        # /usr/local/Homebrew - installation folder of Homebrew
+        # /usr/local/Cellar - installation folder of Homebrew formulae
+        # /usr/local/Frameworks, /usr/local/bin, /usr/local/opt - contain (links to) binaries installed by Homebrew formulae
+        # /usr/local/lib/python3.8 - Python3 packages installation
+        path: |
+          /usr/local/Homebrew
+          /usr/local/Cellar
+          /usr/local/Frameworks
+          /usr/local/bin
+          /usr/local/opt
+          /usr/local/lib/python3.8
+        key: macos-build-cache-${{ hashFiles('./datadog-agent-buildimages/macos/builder_setup.sh') }}
+
     - name: Set up builder
       run: |
         bash ./datadog-agent-buildimages/macos/builder_setup.sh
