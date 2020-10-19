@@ -32,6 +32,10 @@ jobs:
       with:
         submodules: 'true'
 
+    - name: Use XCode 11.7
+      run: |
+        sudo xcode-select -s /Applications/Xcode_11.7.app
+
     - name: Remove preinstalled brew packages
       run: |
         # The base box ships a few things that can have unwanted effects on the MacOS build.
