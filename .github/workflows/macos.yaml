@@ -127,6 +127,8 @@ jobs:
         KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
         SIGN: "true"
       run: |
+        export GOMODCACHE=~/gomodcache
+        mkdir -p $GOMODCACHE
         bash ./datadog-agent-buildimages/macos/build_script.sh
 
     - name: Upload Agent .dmg
