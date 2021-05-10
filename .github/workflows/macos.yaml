@@ -138,6 +138,13 @@ jobs:
         path: |
           ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg
 
+    - name: Add Mozilla certs to perl env for notarization
+      run: |
+        # xpath is a perl tool, without Mozilla:CA certs installed notarization may fail
+        # with SSL errors:
+        # 500 Can't verify SSL peers without knowing which Certificate Authorities to trust http://www.apple.com/DTDs/PropertyList-1.0.dtd
+        PERL_MM_USE_DEFAULT=1 cpan Mozilla::CA
+
     - name: Notarize build
       env:
         RELEASE_VERSION: ${{ github.event.inputs.release_version }}
