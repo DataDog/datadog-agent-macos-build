@@ -143,8 +143,16 @@ jobs:
         # xpath is a perl tool, without Mozilla:CA certs installed notarization may fail
         # with SSL errors:
         # 500 Can't verify SSL peers without knowing which Certificate Authorities to trust http://www.apple.com/DTDs/PropertyList-1.0.dtd
-        PERL_MM_USE_DEFAULT=1 cpan Mozilla::CA
-
+        for retries in {0..4}; do    
+          if PERL_MM_USE_DEFAULT=1 cpan Mozilla::CA; then
+            break
+          fi
+        done
+        if [ $retries -lt 4 ]; then
+          echo Done after $retries retries
+        else
+          echo Failed after 4 retries && false
+        fi
     - name: Notarize build
       env:
         RELEASE_VERSION: ${{ github.event.inputs.release_version }}
