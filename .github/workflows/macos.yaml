@@ -6,7 +6,7 @@ on:
       datadog_agent_ref:
         description: 'git ref to target on datadog-agent'
         required: false
-        default: 'master'
+        default: 'main'
       release_version:
         description: 'release.json version to target'
         required: false
