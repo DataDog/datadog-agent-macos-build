@@ -6,7 +6,7 @@ on:
       datadog_agent_ref:
         description: 'git ref to target on datadog-agent'
         required: false
-        default: 'master'
+        default: 'main'
       release_version:
         description: 'release.json version to target'
         required: false
@@ -137,6 +137,7 @@ jobs:
         name: ${{ github.event.inputs.release_version }}-dmg
         path: |
           ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg
+        if-no-files-found: error
 
     - name: Add Mozilla certs to perl env for notarization
       run: |
