@@ -36,6 +36,10 @@ jobs:
       run: |
         sudo xcode-select -s /Applications/Xcode_11.7.app
 
+    - name: Check 2to3 before
+      run: |
+        ls /usr/local/bin
+
     - name: Remove preinstalled brew packages
       run: |
         # The base box ships a few things that can have unwanted effects on the MacOS build.
@@ -49,6 +53,11 @@ jobs:
         # In order to avoid such cases in the future where we use things we didn't expect to, we'd rather
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
         brew remove --force $(brew list --formula)
+
+    - name: Check 2to3 after
+      run: |
+        ls /usr/local/bin
+        brew list --formula
 
     - name: Cache brew deps
       uses: actions/cache@v2
