@@ -1,5 +1,9 @@
 name: MacOS Agent build
 
+# Workflow inputs default values are set here instead of using the `defaults` keyword
+# so that the `pull_request` event can access them. 
+#
+# Leaving an input empty will use the default value
 env:
   DEFAULT_DATADOG_AGENT_REF: 'main'
   DEFAULT_RELEASE_VERSION: 'nightly-a7'
@@ -13,19 +17,15 @@ on:
       datadog_agent_ref:
         description: 'git ref to target on datadog-agent'
         required: false
-        default: ${DEFAULT_DATADOG_AGENT_REF}
       release_version:
         description: 'release.json version to target'
         required: false
-        default: ${DEFAULT_RELEASE_VERSION}
       agent_major_version:
         description: 'Major version of the Agent to build'
         required: false
-        default: ${DEFAULT_AGENT_MAJOR_VERSION}
       python_runtimes:
         description: 'Included python runtimes in the build'
         required: false
-        default: ${DEFAULT_PYTHON_RUNTIMES}
 
 jobs:
   macos_build:
