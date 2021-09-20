@@ -1,5 +1,11 @@
 name: MacOS Agent build
 
+env:
+  DEFAULT_DATADOG_AGENT_REF: 'main'
+  DEFAULT_RELEASE_VERSION: 'nightly-a7'
+  DEFAULT_AGENT_MAJOR_VERSION: '7'
+  DEFAULT_PYTHON_RUNTIMES: '3'
+
 on:
   pull_request:
   workflow_dispatch:
@@ -7,19 +13,19 @@ on:
       datadog_agent_ref:
         description: 'git ref to target on datadog-agent'
         required: false
-        default: 'main'
+        default: ${DEFAULT_DATADOG_AGENT_REF}
       release_version:
         description: 'release.json version to target'
         required: false
-        default: 'nightly-a7'
+        default: ${DEFAULT_RELEASE_VERSION}
       agent_major_version:
         description: 'Major version of the Agent to build'
         required: false
-        default: '7'
+        default: ${DEFAULT_AGENT_MAJOR_VERSION}
       python_runtimes:
         description: 'Included python runtimes in the build'
         required: false
-        default: '3'
+        default: ${DEFAULT_PYTHON_RUNTIMES}
 
 jobs:
   macos_build:
@@ -120,10 +126,10 @@ jobs:
 
     - name: Run omnibus build
       env:
-        VERSION: ${{ github.event.inputs.datadog_agent_ref }}
-        RELEASE_VERSION: ${{ github.event.inputs.release_version }}
-        AGENT_MAJOR_VERSION: ${{ github.event.inputs.agent_major_version }}
-        PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes }}
+        VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
+        RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
+        AGENT_MAJOR_VERSION: ${{ github.event.inputs.agent_major_version || env.DEFAULT_AGENT_MAJOR_VERSION }}
+        PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes || env.DEFAULT_PYTHON_RUNTIMES }}
         KEYCHAIN_NAME: "build.keychain"
         KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
         SIGN: "true"
@@ -135,7 +141,7 @@ jobs:
     - name: Upload Agent .dmg
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ github.event.inputs.release_version }}-dmg
+        name: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}-dmg
         path: |
           ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg
         if-no-files-found: error
@@ -157,7 +163,7 @@ jobs:
         fi
     - name: Notarize build
       env:
-        RELEASE_VERSION: ${{ github.event.inputs.release_version }}
+        RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
       run: |
