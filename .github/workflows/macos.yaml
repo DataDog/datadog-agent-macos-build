@@ -1,6 +1,7 @@
 name: MacOS Agent build
 
 on:
+  pull_request:
   workflow_dispatch:
     inputs:
       datadog_agent_ref:
