@@ -57,26 +57,46 @@ jobs:
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
         brew remove --force $(brew list --formula)
 
-    - name: Cache brew deps
-      uses: actions/cache@v2
-      with:
-        # Paths to cache:
-        # /usr/local/Homebrew - installation folder of Homebrew
-        # /usr/local/Cellar - installation folder of Homebrew formulae
-        # /usr/local/Frameworks, /usr/local/bin, /usr/local/opt - contain (links to) binaries installed by Homebrew formulae
-        # /usr/local/lib/python3.8 - Python3 packages installation
-        path: |
-          /usr/local/Homebrew
-          /usr/local/Cellar
-          /usr/local/Frameworks
-          /usr/local/bin
-          /usr/local/opt
-          /usr/local/lib/python3.8
-        key: macos-build-cache-${{ hashFiles('./datadog-agent-buildimages/macos/builder_setup.sh') }}
+    # - name: Cache brew deps
+    #   uses: actions/cache@v2
+    #   with:
+    #     # Paths to cache:
+    #     # /usr/local/Homebrew - installation folder of Homebrew
+    #     # /usr/local/Cellar - installation folder of Homebrew formulae
+    #     # /usr/local/Frameworks, /usr/local/bin, /usr/local/opt - contain (links to) binaries installed by Homebrew formulae
+    #     # /usr/local/lib/python3.8 - Python3 packages installation
+    #     path: |
+    #       /usr/local/Homebrew
+    #       /usr/local/Cellar
+    #       /usr/local/Frameworks
+    #       /usr/local/bin
+    #       /usr/local/opt
+    #       /usr/local/lib/python3.8
+    #     key: macos-build-cache-${{ hashFiles('./datadog-agent-buildimages/macos/builder_setup.sh') }}
 
     - name: Set up builder
       run: |
-        bash ./datadog-agent-buildimages/macos/builder_setup.sh
+        export RUBY_VERSION=2.7.4
+        export BUNDLER_VERSION=2.1.4
+
+        # Install ruby (depends on pkg-config)
+        brew tap DataDog/datadog-agent-macos-build
+
+        brew install DataDog/datadog-agent-macos-build/ruby@$RUBY_VERSION -f
+
+        # Brew link cannot be done, as there is a system ruby version (at least up to MacOS 10.14). You need to add the
+        # new ruby to the PATH directly.
+
+        # Note: ${RUBY_VERSION%.*} takes RUBY_VERSION but leaves out the shortest string (from the right) that
+        # matches what's after the %. Here, that means we leave out the bugfix version.
+        # That's needed because gems are stored in a folder named MAJOR.MINOR.0, whatever the bugfix version is.
+        export PATH="/usr/local/opt/ruby@$RUBY_VERSION/bin:/usr/local/lib/ruby/gems/${RUBY_VERSION%.*}.0/bin:$PATH"
+        echo 'export PATH="/usr/local/opt/ruby@'$RUBY_VERSION'/bin:/usr/local/lib/ruby/gems/'${RUBY_VERSION%.*}'.0/bin:$PATH"' >> ~/.build_setup
+
+        # Install bundler
+        gem install bundler -v $BUNDLER_VERSION -f
+
+        echo 'export GOPATH=$HOME/go' >> ~/.build_setup
 
     - name: Add certificates to temporary keychain
       env:
@@ -135,39 +155,54 @@ jobs:
         SIGN: "true"
       run: |
         export GOMODCACHE=~/gomodcache
+        export RUBY_VERSION=2.7.4
         mkdir -p $GOMODCACHE
-        bash ./datadog-agent-buildimages/macos/build_script.sh
 
-    - name: Upload Agent .dmg
-      uses: actions/upload-artifact@v2
-      with:
-        name: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}-dmg
-        path: |
-          ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg
-        if-no-files-found: error
+        source ~/.build_setup
 
-    - name: Add Mozilla certs to perl env for notarization
-      run: |
-        # xpath is a perl tool, without Mozilla:CA certs installed notarization may fail
-        # with SSL errors:
-        # 500 Can't verify SSL peers without knowing which Certificate Authorities to trust http://www.apple.com/DTDs/PropertyList-1.0.dtd
-        for retries in {0..4}; do    
-          if PERL_MM_USE_DEFAULT=1 cpan Mozilla::CA; then
-            break
-          fi
-        done
-        if [ $retries -lt 4 ]; then
-          echo Done after $retries retries
-        else
-          echo Failed after 4 retries && false
-        fi
-    - name: Notarize build
-      env:
-        RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
-        APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
-        NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
-      run: |
-        bash ./datadog-agent-buildimages/macos/notarization_script.sh
+        mkdir -p $GOPATH/src/github.com/Datadog && cd $GOPATH/src/github.com/Datadog
+        git clone https://github.com/DataDog/datadog-agent || true # git clone fails if the datadog-agent repo is already there
+        cd $GOPATH/src/github.com/Datadog/datadog-agent/omnibus
+        which gem
+        which bundle
+        bundle --version
+        ls -la /usr/local/opt/ruby@$RUBY_VERSION/bin
+        ls -la /usr/local/lib/ruby/gems/${RUBY_VERSION%.*}.0/bin
+
+        echo $PATH
+        bundle install
+
+
+    # - name: Upload Agent .dmg
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}-dmg
+    #     path: |
+    #       ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg
+    #     if-no-files-found: error
+
+    # - name: Add Mozilla certs to perl env for notarization
+    #   run: |
+    #     # xpath is a perl tool, without Mozilla:CA certs installed notarization may fail
+    #     # with SSL errors:
+    #     # 500 Can't verify SSL peers without knowing which Certificate Authorities to trust http://www.apple.com/DTDs/PropertyList-1.0.dtd
+    #     for retries in {0..4}; do    
+    #       if PERL_MM_USE_DEFAULT=1 cpan Mozilla::CA; then
+    #         break
+    #       fi
+    #     done
+    #     if [ $retries -lt 4 ]; then
+    #       echo Done after $retries retries
+    #     else
+    #       echo Failed after 4 retries && false
+    #     fi
+    # - name: Notarize build
+    #   env:
+    #     RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
+    #     APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
+    #     NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
+    #   run: |
+    #     bash ./datadog-agent-buildimages/macos/notarization_script.sh
 
     - name: Delete temporary keychain
       if: ${{ always() }}
