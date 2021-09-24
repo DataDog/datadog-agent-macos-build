@@ -72,11 +72,11 @@ jobs:
           /usr/local/bin
           /usr/local/opt
           /usr/local/lib/python3.8
-        key: macos-build-cache-${{ hashFiles('./datadog-agent-buildimages/macos/builder_setup.sh') }}
+        key: macos-build-cache-${{ hashFiles('./datadog-agent-buildimages-test/macos/builder_setup.sh') }}
 
     - name: Set up builder
       run: |
-        bash ./datadog-agent-buildimages/macos/builder_setup.sh
+        bash ./datadog-agent-buildimages-test/macos/builder_setup.sh
 
     - name: Add certificates to temporary keychain
       env:
@@ -136,7 +136,7 @@ jobs:
       run: |
         export GOMODCACHE=~/gomodcache
         mkdir -p $GOMODCACHE
-        bash ./datadog-agent-buildimages/macos/build_script.sh
+        bash ./datadog-agent-buildimages-test/macos/build_script.sh
 
     - name: Upload Agent .dmg
       uses: actions/upload-artifact@v2
@@ -167,7 +167,7 @@ jobs:
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
       run: |
-        bash ./datadog-agent-buildimages/macos/notarization_script.sh
+        bash ./datadog-agent-buildimages-test/macos/notarization_script.sh
 
     - name: Delete temporary keychain
       if: ${{ always() }}

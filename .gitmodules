@@ -1,3 +1,0 @@
-[submodule "datadog-agent-buildimages"]
-	path = datadog-agent-buildimages
-	url = https://github.com/DataDog/datadog-agent-buildimages
