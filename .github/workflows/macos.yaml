@@ -179,6 +179,8 @@ jobs:
         bash ./datadog-agent-buildimages/macos/notarization_script.sh
 
     - name: Delete temporary keychain
-      if: ${{ always() }}
+      env:
+        ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
+      if: "${{ always() && env.ENABLE_SIGN == 'true' }}"
       run: |
         security delete-keychain "build.keychain"
