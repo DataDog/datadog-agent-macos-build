@@ -85,8 +85,8 @@ jobs:
         INSTALLER_CERT_BASE64: ${{ secrets.INSTALLER_CERT_B64 }}
         INSTALLER_CERT_PASSPHRASE: ${{ secrets.INSTALLER_CERT_PASSPHRASE }}
         KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
-        CI_IF_TEST_SECRET: ${{ secrets.CI_IF_TEST_SECRET }}
-      if: "${{ env.CI_IF_TEST_SECRET != '' }}"
+        ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
+      if: "${{ env.ENABLE_SIGN != '' }}"
       run: |
         # Create temporary build keychain
         security create-keychain -p "$KEYCHAIN_PWD" "build.keychain"
@@ -136,7 +136,7 @@ jobs:
         KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
         INTEGRATION_WHEELS_CACHE_BUCKET: dd-agent-omnibus
         INTEGRATION_WHEELS_SKIP_CACHE_UPLOAD: "true"
-        SIGN: ${{ secrets.CI_IF_TEST_SECRET != '' }}
+        SIGN: ${{ secrets.ENABLE_SIGN }}
       run: |
         export GOMODCACHE=~/gomodcache
         mkdir -p $GOMODCACHE
@@ -152,8 +152,8 @@ jobs:
 
     - name: Add Mozilla certs to perl env for notarization
       env:
-        CI_IF_TEST_SECRET: ${{ secrets.CI_IF_TEST_SECRET }}
-      if: "${{ env.CI_IF_TEST_SECRET != '' }}"
+        ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
+      if: "${{ env.ENABLE_SIGN == 'true' }}"
       run: |
         # xpath is a perl tool, without Mozilla:CA certs installed notarization may fail
         # with SSL errors:
@@ -173,8 +173,8 @@ jobs:
         RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
-        CI_IF_TEST_SECRET: ${{ secrets.CI_IF_TEST_SECRET }}
-      if: "${{ env.CI_IF_TEST_SECRET != '' }}"
+        ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
+      if: "${{ env.ENABLE_SIGN == 'true' }}"
       run: |
         bash ./datadog-agent-buildimages/macos/notarization_script.sh
 
