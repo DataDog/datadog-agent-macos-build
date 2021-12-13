@@ -5,11 +5,8 @@ The scripts in this folder are made to create a build environment for the MacOS 
 
 ## Prerequisites
 
-- A clean MacOS 10.13.6 (High Sierra) host
-
-**Note:** The MacOS Agent build is currently not compatible with MacOS releases 10.14.4 and higher. MacOS 10.14.4 and higher use XCode 10.2+ by default. XCode 10.2 obsoleted Swift 3 ([see XCode 10.2 changelog](https://developer.apple.com/documentation/xcode_release_notes/xcode_10_2_release_notes/swift_5_release_notes_for_xcode_10_2?preferredLanguage=occ)), which [the Agent systray app targets](https://github.com/DataDog/datadog-agent/blob/master/omnibus/config/software/datadog-agent.rb#L226).
-
-- Varying environment variables & files present on the host (see individual files for specific requirements).
+- A clean MacOS 10.15 host
+- Varying environment variables & files present on the host (see individual scripts for specific requirements).
 
 ## Contents
 
