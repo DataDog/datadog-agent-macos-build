@@ -126,6 +126,16 @@ jobs:
         # Note: we silence the output of this command because it contains metadata about the certificates.
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PWD" "build.keychain" &>/dev/null
 
+    - name: Run tests
+      env:
+        VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
+        PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes || env.DEFAULT_PYTHON_RUNTIMES }}
+      if: "${{ github.event.inputs.test_only == 'true' }}"
+      run: |
+        export GOMODCACHE=~/gomodcache
+        mkdir -p $GOMODCACHE
+        bash ./scripts/test_script.sh
+
     - name: Run omnibus build
       env:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
@@ -139,12 +149,14 @@ jobs:
         S3_OMNIBUS_CACHE_BUCKET: "dd-ci-datadog-agent-omnibus-cache-build-stable"
         S3_OMNIBUS_CACHE_ANONYMOUS_ACCESS: "true"
         SIGN: ${{ secrets.ENABLE_SIGN }}
+      if: "${{ github.event.inputs.test_only != 'true' }}"
       run: |
         export GOMODCACHE=~/gomodcache
         mkdir -p $GOMODCACHE
         bash ./scripts/build_script.sh
 
     - name: Upload Agent .dmg
+      if: "${{ github.event.inputs.test_only != 'true' }}"
       uses: actions/upload-artifact@v2
       with:
         name: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}-dmg
