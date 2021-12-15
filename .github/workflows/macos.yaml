@@ -138,7 +138,6 @@ jobs:
         INTEGRATION_WHEELS_SKIP_CACHE_UPLOAD: "true"
         S3_OMNIBUS_CACHE_BUCKET: "dd-ci-datadog-agent-omnibus-cache-build-stable"
         S3_OMNIBUS_CACHE_ANONYMOUS_ACCESS: "true"
-        SIGN: ${{ secrets.ENABLE_SIGN }}
       run: |
         export GOMODCACHE=~/gomodcache
         mkdir -p $GOMODCACHE
