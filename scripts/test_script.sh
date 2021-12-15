@@ -30,8 +30,8 @@ inv -e install-tools
 inv -e deps
 
 # Run rtloader test
-inv rtloader.make --install-prefix=$GOPATH/src/github.com/DataDog/datadog-agent/dev
-inv rtloader.install
+inv -e rtloader.make --install-prefix=$GOPATH/src/github.com/DataDog/datadog-agent/dev
+inv -e rtloader.install
 inv -e rtloader.test
 
 # Run unit tests
