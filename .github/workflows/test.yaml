@@ -28,8 +28,6 @@ jobs:
     steps:
     - name: Checkout with submodules
       uses: actions/checkout@v2
-      with:
-        submodules: 'true'
 
     - name: Use XCode 11.7
       run: |
