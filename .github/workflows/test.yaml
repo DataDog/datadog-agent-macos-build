@@ -20,7 +20,7 @@ on:
         required: false
 
 jobs:
-  macos_build:
+  macos_test:
     runs-on: macos-10.15
     defaults:
       run:
