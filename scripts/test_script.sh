@@ -14,9 +14,9 @@ set -e
 source ~/.build_setup
 
 # Clone the repo
-mkdir -p $GOPATH/src/github.com/Datadog && cd $GOPATH/src/github.com/Datadog
+mkdir -p $GOPATH/src/github.com/DataDog && cd $GOPATH/src/github.com/DataDog
 git clone https://github.com/DataDog/datadog-agent || true # git clone fails if the datadog-agent repo is already there
-cd $GOPATH/src/github.com/Datadog/datadog-agent
+cd $GOPATH/src/github.com/DataDog/datadog-agent
 
 # Checkout to correct version
 git pull
@@ -30,7 +30,7 @@ inv -e install-tools
 inv -e deps
 
 # Run rtloader test
-inv -e rtloader.make --install-prefix=$GOPATH/src/github.com/DataDog/datadog-agent/dev
+inv -e rtloader.make --python-runtimes $PYTHON_RUNTIMES
 inv -e rtloader.install
 inv -e rtloader.test
 
