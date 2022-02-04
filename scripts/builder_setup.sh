@@ -2,6 +2,8 @@
 
 set -e
 
+# Comment so that the hash changes
+
 # Setups a MacOS builder that can do unsigned builds of the MacOS Agent.
 # The .build_setup file is populated with the correct envvar definitions to do the build,
 # which are then used by the build script.
