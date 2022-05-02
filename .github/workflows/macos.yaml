@@ -143,7 +143,7 @@ jobs:
         bash ./scripts/build_script.sh
 
     - name: Upload Agent .dmg
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}-dmg
         path: |
