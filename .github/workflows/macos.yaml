@@ -150,6 +150,14 @@ jobs:
           ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg
         if-no-files-found: error
 
+    - name: Upload Omnibus version manifest
+      uses: actions/upload-artifact@v3
+      with:
+        name: version-manifest.json
+        path: |
+          ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/version-manifest.json
+        if-no-files-found: error
+
     - name: Add Mozilla certs to perl env for notarization
       env:
         ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
