@@ -28,6 +28,17 @@ on:
         required: false
 
 jobs:
+  macos_debug:
+    runs-on: macos-10.15
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Download MQ toolkit
+      run: |
+        curl --retry 5 --fail "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/mactoolkit/9.2.2.0-IBM-MQ-Toolkit-MacX64.pkg" -o /tmp/mq_client.pkg
+        ls -la /tmp/
+        cat /tmp/mq_client.pkg
   macos_build:
     runs-on: macos-10.15
     defaults:
