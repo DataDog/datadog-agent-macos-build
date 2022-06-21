@@ -31,12 +31,6 @@ export IBM_MQ_VERSION=9.2.2.0
 # Install or upgrade brew (will also install Command Line Tools)
 CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
-curl --version
-
-# Get a newer version of curl because the default one doesn't support
-# newer flags
-brew install curl
-
 # Add our custom repository
 brew tap DataDog/datadog-agent-macos-build
 
