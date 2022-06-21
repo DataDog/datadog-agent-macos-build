@@ -31,9 +31,11 @@ export IBM_MQ_VERSION=9.2.2.0
 # Install or upgrade brew (will also install Command Line Tools)
 CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
-# Update curl
+curl --version
+
+# Get a newer version of curl because the default one doesn't support
+# newer flags
 brew install curl
-export PATH="/usr/local/opt/curl/bin:$PATH"
 
 # Add our custom repository
 brew tap DataDog/datadog-agent-macos-build
@@ -73,6 +75,6 @@ echo 'eval `gimme '$GO_VERSION'`' >> ~/.build_setup
 
 # Install IBM MQ
 sudo mkdir -p /opt/mqm
-curl --retry 5 --fail --retry-all-errors "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/mactoolkit/${IBM_MQ_VERSION}-IBM-MQ-Toolkit-MacX64.pkg" -o /tmp/mq_client.pkg
+/usr/local/opt/curl/bin/curl --retry 5 --fail --retry-all-errors "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/mactoolkit/${IBM_MQ_VERSION}-IBM-MQ-Toolkit-MacX64.pkg" -o /tmp/mq_client.pkg
 sudo installer -pkg /tmp/mq_client.pkg -target /
 sudo rm -rf /tmp/mq_client.pkg
