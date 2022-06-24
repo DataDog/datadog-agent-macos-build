@@ -26,7 +26,7 @@ export CMAKE_VERSION=3.18.2.2
 export GIMME_VERSION=1.5.4
 
 export GO_VERSION=1.17.6
-export IBM_MQ_VERSION=9.2.2.0
+export IBM_MQ_VERSION=9.2.4.0
 
 # Install or upgrade brew (will also install Command Line Tools)
 CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
