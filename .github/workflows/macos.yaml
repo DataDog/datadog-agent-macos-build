@@ -55,6 +55,9 @@ jobs:
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
         brew remove --force --ignore-dependencies $(brew list --formula)
 
+        # Also completely remove the ruby env
+        rm -rf /usr/local/lib/ruby
+
     - name: Cache brew deps
       uses: actions/cache@v3.0.3
       with:
