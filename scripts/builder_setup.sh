@@ -19,14 +19,16 @@ set -e
 # 2. Update here the version of the formula to use.
 export PKG_CONFIG_VERSION=0.29.2
 export RUBY_VERSION=2.7.4
-export BUNDLER_VERSION=2.3.6
+export BUNDLER_VERSION=2.3.16
 export PYTHON_VERSION=3.8.11
 # Pin cmake version without sphinx-doc, which causes build issues
 export CMAKE_VERSION=3.18.2.2
 export GIMME_VERSION=1.5.4
 
 export GO_VERSION=1.17.6
-export IBM_MQ_VERSION=9.2.2.0
+# Newer version of IBM_MQ have a different name
+# export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
+export IBM_MQ_VERSION=9.2.2.0-IBM-MQ-Toolkit
 
 # Install or upgrade brew (will also install Command Line Tools)
 CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
@@ -69,6 +71,6 @@ echo 'eval `gimme '$GO_VERSION'`' >> ~/.build_setup
 
 # Install IBM MQ
 sudo mkdir -p /opt/mqm
-curl "https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/messaging/mqdev/mactoolkit/${IBM_MQ_VERSION}-IBM-MQ-Toolkit-MacX64.pkg" -o /tmp/mq_client.pkg
+curl --retry 5 --fail "https://s3.amazonaws.com/dd-agent-omnibus/ibm-mq-backup/${IBM_MQ_VERSION}-MacX64.pkg" -o /tmp/mq_client.pkg
 sudo installer -pkg /tmp/mq_client.pkg -target /
 sudo rm -rf /tmp/mq_client.pkg
