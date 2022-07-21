@@ -72,7 +72,7 @@ jobs:
           /usr/local/bin
           /usr/local/opt
           /usr/local/lib/python3.8
-        key: macos-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
+        key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
 
     - name: Set up builder
       run: |
