@@ -58,7 +58,7 @@ echo "Sending notarization request."
 for i in {1..5}; do
     NOTARIZATION_REQUEST_OUTPUT=$(xcrun altool --notarize-app --primary-bundle-id "com.datadoghq.agent.$RELEASE_VERSION" --username "$APPLE_ACCOUNT" --password "$NOTARIZATION_PWD" --file "$LATEST_DMG" --output-format xml)
     echo "$NOTARIZATION_REQUEST_OUTPUT"
-    REQUEST_UUID=$(echo "$NOTARIZATION_REQUEST_OUTPUT" | xpath "/plist/dict/key[text()='notarization-upload']/following-sibling::*[1]/key[text()='RequestUUID']/following-sibling::*[1]/text()")
+    REQUEST_UUID=$(echo "$NOTARIZATION_REQUEST_OUTPUT" | xpath -e "/plist/dict/key[text()='notarization-upload']/following-sibling::*[1]/key[text()='RequestUUID']/following-sibling::*[1]/text()")
     if [[ -n "$REQUEST_UUID" ]]; then
         break
     fi
@@ -110,7 +110,7 @@ while [[ -z "$NOTARIZATION_STATUS_CODE" ]]; do
     echo "Fetching notarization status"
     NOTARIZATION_STATUS_OUTPUT=$(xcrun altool --notarization-info "$REQUEST_UUID" -u "$APPLE_ACCOUNT" -p "$NOTARIZATION_PWD" --output-format xml)
     echo "$NOTARIZATION_STATUS_OUTPUT"
-    NOTARIZATION_STATUS_CODE=$(echo "$NOTARIZATION_STATUS_OUTPUT" | xpath "/plist/dict/key[text()='notarization-info']/following-sibling::*[1]/key[text()='Status Code']/following-sibling::*[1]/text()")
+    NOTARIZATION_STATUS_CODE=$(echo "$NOTARIZATION_STATUS_OUTPUT" | xpath -e "/plist/dict/key[text()='notarization-info']/following-sibling::*[1]/key[text()='Status Code']/following-sibling::*[1]/text()")
 done
 
 # Print final status in the console
