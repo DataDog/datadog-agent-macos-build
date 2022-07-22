@@ -21,6 +21,7 @@ cd $GOPATH/src/github.com/DataDog/datadog-agent
 # Checkout to correct version
 git pull
 git checkout "$VERSION"
+git rev-parse HEAD
 
 # Install python deps (invoke, etc.)
 python3 -m pip install -r requirements.txt
