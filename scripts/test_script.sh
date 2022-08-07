@@ -36,7 +36,7 @@ inv -e rtloader.install
 #inv -e rtloader.test
 
 # Run unit tests
-inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --coverage --race --profile --cpus 3
+inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --coverage --race --profile --cpus 3 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz"
 
 # Run invoke task tests
 python3 -m tasks.release_tests

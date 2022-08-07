@@ -86,3 +86,13 @@ jobs:
         export GOMODCACHE=~/gomodcache
         mkdir -p $GOMODCACHE
         bash ./scripts/test_script.sh
+
+    - name: Upload unit test reports
+      uses: actions/upload-artifact@v3
+      if: "${{ always() }}"
+      with:
+        name: junit-files
+        path: |
+          ~/go/src/github.com/DataDog/datadog-agent/test_output.json
+          ~/go/src/github.com/DataDog/datadog-agent/junit-tests_macos.tgz
+        if-no-files-found: error
