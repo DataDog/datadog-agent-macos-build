@@ -151,7 +151,7 @@ jobs:
         S3_OMNIBUS_CACHE_BUCKET: "dd-ci-datadog-agent-omnibus-cache-build-stable"
         S3_OMNIBUS_CACHE_ANONYMOUS_ACCESS: "true"
         SIGN: ${{ secrets.ENABLE_SIGN }}
-        USE_CACHING_PROXY_RUBY: "true"
+        USE_CACHING_PROXY_RUBY: ${{ secrets.ENABLE_CACHING_PROXY }}
         ARTIFACTORY_TOKEN: ${{ secrets.ARTIFACTORY_TOKEN }}
         ARTIFACTORY_USERNAME: datadog-agent
         ARTIFACTORY_URL: datadog.jfrog.io
