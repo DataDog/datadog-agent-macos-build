@@ -25,7 +25,7 @@ export PYTHON_VERSION=3.8.11
 export CMAKE_VERSION=3.18.2.2
 export GIMME_VERSION=1.5.4
 
-export GO_VERSION=1.18.6
+export GO_VERSION=1.17.11
 # Newer version of IBM_MQ have a different name
 export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 #export IBM_MQ_VERSION=9.2.2.0-IBM-MQ-Toolkit
