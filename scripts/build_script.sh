@@ -1,5 +1,10 @@
 #!/bin/bash -e
 
+# Unless explicitly stated otherwise all files in this repository are licensed
+# under the Apache License Version 2.0.
+# This product includes software developed at Datadog (https://www.datadoghq.com/)
+# Copyright 2022-present Datadog, Inc.
+
 # FIXME: Uncomment this once we fix the way we cache the builder setup
 # in datadog-agent-macos-build, we have non-critical errors that make
 # the script fail with set -e.
