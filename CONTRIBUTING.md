@@ -19,7 +19,7 @@ In order to ease/speed up our review, here are some items you can check/improve 
 
   * Have a proper commit history (we advise you to rebase if needed).
   * Write tests for the code you wrote.
-  * Preferably, make sure that all unit tests pass locally and some relevant kitchen tests.
+  * Preferably, make sure that all unit tests pass locally.
   * Summarize your PR with an explanatory title and a message describing your changes, cross-referencing any related bugs/PRs.
   * Open your PR against the `master` branch.
 
