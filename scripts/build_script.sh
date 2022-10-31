@@ -53,6 +53,7 @@ sudo mkdir -p /opt/datadog-agent /var/cache/omnibus && sudo chown "$USER" /opt/d
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
     security unlock-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
+    inv check-go-version || exit 1
     inv -e agent.omnibus-build --hardened-runtime --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION"
     # Lock the keychain once we're done
     security lock-keychain "$KEYCHAIN_NAME"
