@@ -31,6 +31,12 @@ on:
       python_runtimes:
         description: 'Included python runtimes in the build'
         required: false
+      bucket_branch:
+        description: 'Release branch we are building for'
+        required: false
+      gitlab_pipeline_id:
+        description: 'ID of Gitlab pipeline that triggered this build'
+        required: false
 
 jobs:
   id:
