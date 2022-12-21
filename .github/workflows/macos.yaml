@@ -94,6 +94,10 @@ jobs:
           /usr/local/lib/python3.8
         key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
 
+    - name: Clone datadog-agent repository
+      run: |
+        bash ./scripts/clone_agent.sh
+
     - name: Set up builder
       run: |
         bash ./scripts/builder_setup.sh
