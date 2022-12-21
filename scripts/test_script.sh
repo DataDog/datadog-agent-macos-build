@@ -17,10 +17,6 @@ set -e
 
 # Load build setup vars
 source ~/.build_setup
-
-# Clone the repo
-mkdir -p $GOPATH/src/github.com/DataDog && cd $GOPATH/src/github.com/DataDog
-git clone https://github.com/DataDog/datadog-agent || true # git clone fails if the datadog-agent repo is already there
 cd $GOPATH/src/github.com/DataDog/datadog-agent
 
 # Checkout to correct version

@@ -22,6 +22,9 @@ set -e
 # 1. See the instructions of the DataDog/homebrew-datadog-agent-macos-build repo
 #    to add a formula for the new version you want to use.
 # 2. Update here the version of the formula to use.
+
+source ~/.build_setup
+
 export PKG_CONFIG_VERSION=0.29.2
 export RUBY_VERSION=2.7.4
 export BUNDLER_VERSION=2.3.18
@@ -30,7 +33,7 @@ export PYTHON_VERSION=3.8.11
 export CMAKE_VERSION=3.18.2.2
 export GIMME_VERSION=1.5.4
 
-export GO_VERSION=1.18.9
+export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
 # Newer version of IBM_MQ have a different name
 export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 #export IBM_MQ_VERSION=9.2.2.0-IBM-MQ-Toolkit
@@ -61,12 +64,6 @@ gem install bundler -v $BUNDLER_VERSION -f
 # Install python
 brew install DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
-
-mkdir -p $HOME/go
-export GOPATH=$HOME/go
-echo 'export GOPATH=$HOME/go' >> ~/.build_setup
-export PATH="$GOPATH/bin:$PATH"
-echo 'export PATH="$GOPATH/bin:$PATH"' >> ~/.build_setup
 
 # Install gimme
 brew install DataDog/datadog-agent-macos-build/gimme@$GIMME_VERSION -f
