@@ -75,6 +75,8 @@ jobs:
         key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
 
     - name: Clone datadog-agent repository
+      env:
+        VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
       run: |
         bash ./scripts/clone_agent.sh
 
