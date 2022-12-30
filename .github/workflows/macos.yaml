@@ -52,6 +52,11 @@ jobs:
       run:
         shell: bash
     steps:
+    - name: Check what Python libraries come with the image
+      run: |
+        python3 --version
+        python3 -m pip freeze
+        python3 -m pip install -r requirements.txt --dry-run
     - name: Checkout with submodules
       uses: actions/checkout@v3
 
