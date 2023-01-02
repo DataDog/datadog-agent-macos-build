@@ -11,6 +11,7 @@ set -e
 # and runs the unit tests
 
 # Prerequisites:
+# - clone_agent.sh has been run
 # - builder_setup.sh has been run
 # - $VERSION contains the datadog-agent git ref to target
 # - $PYTHON_RUNTIMES contains the included python runtimes
@@ -18,10 +19,6 @@ set -e
 # Load build setup vars
 source ~/.build_setup
 cd $GOPATH/src/github.com/DataDog/datadog-agent
-
-# Checkout to correct version
-git pull
-git checkout "$VERSION"
 
 # Install python deps (invoke, etc.)
 python3 -m pip install -r requirements.txt
