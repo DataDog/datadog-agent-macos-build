@@ -111,7 +111,7 @@ jobs:
           /usr/local/bin
           /usr/local/opt
           /usr/local/lib/python3.8
-        key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
+        key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}-v2
 
     - name: Check what Python libraries come with the image
       run: |
