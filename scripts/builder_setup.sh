@@ -13,6 +13,8 @@ set -e
 
 # Prerequisites:
 # - A MacOS 10.13.6 (High Sierra) box
+# - clone_agent.sh has been run
+
 
 # About brew packages:
 # We use a custom homebrew tap (DataDog/datadog-agent-macos-build, hosted in https://github.com/DataDog/homebrew-datadog-agent-macos-build)

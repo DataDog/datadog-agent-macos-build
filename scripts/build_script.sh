@@ -11,10 +11,10 @@
 # set -e
 
 
-# Fetches the datadog-agent repo, checks out to the requested version
-# and does an omnibus build of the Agent.
+# Does an omnibus build of the Agent.
 
 # Prerequisites:
+# - clone_agent.sh has been run
 # - builder_setup.sh has been run
 # - $VERSION contains the datadog-agent git ref to target
 # - $RELEASE_VERSION contains the release.json version to package. Defaults to $VERSION
@@ -31,10 +31,6 @@ export KEYCHAIN_NAME=${KEYCHAIN_NAME:-"login.keychain"}
 # Load build setup vars
 source ~/.build_setup
 cd $GOPATH/src/github.com/DataDog/datadog-agent
-
-# Checkout to correct version
-git pull
-git checkout "$VERSION"
 
 # Install python deps (invoke, etc.)
 python3 -m pip install -r requirements.txt
