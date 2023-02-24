@@ -34,6 +34,7 @@ export PYTHON_VERSION=3.8.11
 # Pin cmake version without sphinx-doc, which causes build issues
 export CMAKE_VERSION=3.18.2.2
 export GIMME_VERSION=1.5.4
+export LIBRDKAFKA_VERSION=2.0.2
 
 export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
 # Newer version of IBM_MQ have a different name
@@ -78,3 +79,7 @@ sudo mkdir -p /opt/mqm
 curl --retry 5 --fail "https://s3.amazonaws.com/dd-agent-omnibus/ibm-mq-backup/${IBM_MQ_VERSION}-MacX64.pkg" -o /tmp/mq_client.pkg
 sudo installer -pkg /tmp/mq_client.pkg -target /
 sudo rm -rf /tmp/mq_client.pkg
+
+# Install librdkafka (needed for confluent-kafka)
+brew install DataDog/datadog-agent-macos-build/librdkafka@$LIBRDKAFKA_VERSION -f
+brew link --overwrite librdkafka@$LIBRDKAFKA_VERSION
