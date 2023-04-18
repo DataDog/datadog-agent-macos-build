@@ -37,6 +37,9 @@ on:
       gitlab_pipeline_id:
         description: 'ID of Gitlab pipeline that triggered this build'
         required: false
+      version_cache:
+        description: 'Content of the agent-version.cache file'
+        required: false
 
 jobs:
   id:
@@ -102,6 +105,8 @@ jobs:
 
     - name: Set up builder
       run: |
+        export VERSION_CACHE_CONTENT="${{github.event.inputs.version_cache}}"
+        if [ ! -z "$VERSION_CACHE_CONTENT" ]; then echo "$VERSION_CACHE_CONTENT" > $GOPATH/src/github.com/DataDog/datadog-agent/agent-version.cache; fi
         bash ./scripts/builder_setup.sh
 
     - name: Add certificates to temporary keychain
