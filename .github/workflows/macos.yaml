@@ -37,6 +37,9 @@ on:
       gitlab_pipeline_id:
         description: 'ID of Gitlab pipeline that triggered this build'
         required: false
+      version_cache:
+        description: 'Content of the agent-version.cache file'
+        required: false
 
 jobs:
   id:
@@ -99,6 +102,8 @@ jobs:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
       run: |
         bash ./scripts/clone_agent.sh
+        export VERSION_CACHE_CONTENT="${{github.event.inputs.version_cache}}"
+        if [ ! -z "$VERSION_CACHE_CONTENT" ]; then echo "$VERSION_CACHE_CONTENT" > $HOME/go/src/github.com/DataDog/datadog-agent/agent-version.cache; fi
 
     - name: Set up builder
       run: |
