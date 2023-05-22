@@ -36,5 +36,12 @@ inv -e rtloader.install
 # Run unit tests
 inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 3 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz"
 
+ls 
+pwd 
+ls ~/go/src/github.com/DataDog/datadog-agent/
+cat ~/go/src/github.com/DataDog/datadog-agent/test_output.json
+tar -tf ~/go/src/github.com/DataDog/datadog-agent/junit-tests_macos.tgz
+
+
 # Run invoke task tests
 inv -e invoke-unit-tests
