@@ -92,6 +92,8 @@ jobs:
         export GOMODCACHE=~/gomodcache
         mkdir -p $GOMODCACHE
         bash ./scripts/test_script.sh
+        echo "TEST ERROR"
+        exit 1
 
     - name: Upload unit test reports
       uses: actions/upload-artifact@v3
