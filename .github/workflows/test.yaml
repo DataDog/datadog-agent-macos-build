@@ -96,6 +96,8 @@ jobs:
         exit 1
 
     - name: Upload unit test reports
+      env:
+        ACTIONS_STEP_DEBUG: true
       uses: actions/upload-artifact@v3
       if: "${{ always() }}"
       with:
