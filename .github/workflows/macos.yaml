@@ -104,6 +104,7 @@ jobs:
         bash ./scripts/clone_agent.sh
         export VERSION_CACHE_CONTENT="${{github.event.inputs.version_cache}}"
         if [ ! -z "$VERSION_CACHE_CONTENT" ]; then echo "$VERSION_CACHE_CONTENT" > $HOME/go/src/github.com/DataDog/datadog-agent/agent-version.cache; fi
+        cat $HOME/go/src/github.com/DataDog/datadog-agent/agent-version.cache
 
     - name: Archive Agent Cache
       uses: actions/upload-artifact@v3
