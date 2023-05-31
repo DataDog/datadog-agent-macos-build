@@ -105,6 +105,13 @@ jobs:
         export VERSION_CACHE_CONTENT="${{github.event.inputs.version_cache}}"
         if [ ! -z "$VERSION_CACHE_CONTENT" ]; then echo "$VERSION_CACHE_CONTENT" > $HOME/go/src/github.com/DataDog/datadog-agent/agent-version.cache; fi
 
+    - name: Archive Agent Cache
+      uses: actions/upload-artifact@v3
+      with:
+        name: agent-version.cache
+        path: $HOME/go/src/github.com/DataDog/datadog-agent/agent-version.cache
+        retention-days: 1
+
     - name: Set up builder
       run: |
         bash ./scripts/builder_setup.sh
