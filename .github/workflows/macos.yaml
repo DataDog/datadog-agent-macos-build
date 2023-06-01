@@ -103,8 +103,7 @@ jobs:
       run: |
         bash ./scripts/clone_agent.sh
         export VERSION_CACHE_CONTENT="${{github.event.inputs.version_cache}}"
-        if [ ! -z "$VERSION_CACHE_CONTENT" ]; then echo "$VERSION_CACHE_CONTENT" > ./agent-version.cache; fi
-        cat ./agent-version.cache
+        if [ ! -z "$VERSION_CACHE_CONTENT" ]; then base64 -d <(echo "$VERSION_CACHE_CONTENT") > ./agent-version.cache; fi
 
     - name: Archive Agent Cache
       uses: actions/upload-artifact@v3
