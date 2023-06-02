@@ -21,6 +21,9 @@ on:
       python_runtimes:
         description: 'Included python runtimes in the build'
         required: false
+      version_cache:
+        description: 'Content of the agent-version.cache file'
+        required: false
 
 jobs:
   id:
