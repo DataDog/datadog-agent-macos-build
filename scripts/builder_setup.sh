@@ -30,7 +30,7 @@ source ~/.build_setup
 export PKG_CONFIG_VERSION=0.29.2
 export RUBY_VERSION=2.7.4
 export BUNDLER_VERSION=2.3.18
-export PYTHON_VERSION=3.9.16
+export PYTHON_VERSION=3.9.6
 # Pin cmake version without sphinx-doc, which causes build issues
 export CMAKE_VERSION=3.18.2.2
 export GIMME_VERSION=1.5.4
