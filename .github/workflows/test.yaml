@@ -21,9 +21,6 @@ on:
       python_runtimes:
         description: 'Included python runtimes in the build'
         required: false
-      version_cache:
-        description: 'Base 64-encoded content of the agent-version.cache file'
-        required: false
 
 jobs:
   id:
@@ -82,9 +79,6 @@ jobs:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
       run: |
         bash ./scripts/clone_agent.sh
-        cd $HOME/go/src/github.com/DataDog/datadog-agent
-        export VERSION_CACHE_CONTENT="${{github.event.inputs.version_cache}}"
-        if [ ! -z "$VERSION_CACHE_CONTENT" ]; then base64 -d <(echo "$VERSION_CACHE_CONTENT") > ./agent-version.cache; fi
 
     - name: Set up builder
       run: |
