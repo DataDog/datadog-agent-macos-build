@@ -38,7 +38,7 @@ on:
         description: 'ID of Gitlab pipeline that triggered this build'
         required: false
       version_cache:
-        description: 'Content of the agent-version.cache file'
+        description: 'Base 64-encoded content of the agent-version.cache file'
         required: false
 
 jobs:
