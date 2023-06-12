@@ -30,7 +30,7 @@ source ~/.build_setup
 export PKG_CONFIG_VERSION=0.29.2
 export RUBY_VERSION=2.7.4
 export BUNDLER_VERSION=2.3.18
-export PYTHON_VERSION=3.8.11
+export PYTHON_VERSION=3.9.6
 # Pin cmake version without sphinx-doc, which causes build issues
 export CMAKE_VERSION=3.18.2.2
 export GIMME_VERSION=1.5.4
@@ -64,6 +64,14 @@ brew link --overwrite ruby@$RUBY_VERSION
 gem install bundler -v $BUNDLER_VERSION -f
 
 # Install python
+# "brew link --overwrite" will refuse to overwrite links it doesn't own,
+# so we have to make sure these don't exist
+# see: https://github.com/actions/setup-python/issues/577
+rm -f /usr/local/bin/2to3 \
+      /usr/local/bin/idle3 \
+      /usr/local/bin/pydoc3 \
+      /usr/local/bin/python3 \
+      /usr/local/bin/python3-config
 brew install DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
 
