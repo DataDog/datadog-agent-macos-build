@@ -41,6 +41,7 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 #export IBM_MQ_VERSION=9.2.2.0-IBM-MQ-Toolkit
 
 # Install or upgrade brew (will also install Command Line Tools)
+rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
 CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 # Add our custom repository
