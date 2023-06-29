@@ -42,7 +42,8 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 
 # Install or upgrade brew (will also install Command Line Tools)
 rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
-CI=1 HOMEBREW_NO_INSTALL_FROM_API=0 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+unset HOMEBREW_NO_INSTALL_FROM_API
+CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 # Add our custom repository
 brew tap DataDog/datadog-agent-macos-build
