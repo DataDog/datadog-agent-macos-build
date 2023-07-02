@@ -40,6 +40,10 @@ export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version
 export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 #export IBM_MQ_VERSION=9.2.2.0-IBM-MQ-Toolkit
 
+# Setup git to clone via ssh
+
+git config --global url."git@github.com:".insteadOf "https://github.com/"
+
 # Install or upgrade brew (will also install Command Line Tools)
 
 # NOTE: The macOS runner has HOMEBREW_NO_INSTALL_FROM_API set, which makes it
