@@ -60,7 +60,7 @@ for i in $(seq 0 $HOMEBREW_CLONE_RETRY_NB); do
     if [ $? = 0 ]; then
         break
     fi
-    if [ $i = 3 ]; then
+    if [ $i = $HOMEBREW_CLONE_RETRY_NB ]; then
         exit 1
     fi
     sleep 5
