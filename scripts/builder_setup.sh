@@ -52,7 +52,16 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 # avoiding the error.
 rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
 unset HOMEBREW_NO_INSTALL_FROM_API
-CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+
+HOMEBREW_CLONE_RETRY_NB=3
+
+for i in $(seq 0 $HOMEBREW_CLONE_RETRY_NB); do
+    (CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" && break) || echo "Cloning failed !! Retrying in 5sec..."
+    if [ $i = 3 ];
+        exit 1
+    fi
+    sleep 5
+done
 
 # Add our custom repository
 brew tap DataDog/datadog-agent-macos-build
