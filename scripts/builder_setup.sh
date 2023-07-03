@@ -56,14 +56,13 @@ unset HOMEBREW_NO_INSTALL_FROM_API
 HOMEBREW_CLONE_RETRY_NB=3
 
 for i in $(seq 0 $HOMEBREW_CLONE_RETRY_NB); do
-    CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" || echo "Clone failed !! Retrying in 5 sec..."
     if [ $? = 0 ]; then
         break
     fi
     if [ $i = 3 ]; then
         exit 1
     fi
-    echo "Clone failed !! Retrying in 5 sec..."
     sleep 5
 done
 
