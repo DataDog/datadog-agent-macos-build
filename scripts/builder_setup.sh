@@ -50,6 +50,7 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 # Unsetting HOMEBREW_NO_INSTALL_FROM_API makes brew use formulas from
 # https://formulae.brew.sh/, thus avoiding cloning the repository, hence
 # avoiding the error.
+brew untap homebrew/cask
 rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
 unset HOMEBREW_NO_INSTALL_FROM_API
 
