@@ -51,7 +51,7 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 # https://formulae.brew.sh/, thus avoiding cloning the repository, hence
 # avoiding the error.
 brew untap --force homebrew/cask
-brew untap --force homebrew/core
+rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
 unset HOMEBREW_NO_INSTALL_FROM_API
 
 CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
