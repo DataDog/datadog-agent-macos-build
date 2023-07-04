@@ -42,17 +42,7 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 
 # Install or upgrade brew (will also install Command Line Tools)
 
-# NOTE: The macOS runner has HOMEBREW_NO_INSTALL_FROM_API set, which makes it
-# try to clone homebrew-core. At one point, cloning of homebrew-core started
-# returning the following error for us in about 50 % of cases:
-#     remote: fatal: object 80a071c049c4f2e465e0b1c40cfc6325005ab05b cannot be read
-#     remote: aborting due to possible repository corruption on the remote side.
-# Unsetting HOMEBREW_NO_INSTALL_FROM_API makes brew use formulas from
-# https://formulae.brew.sh/, thus avoiding cloning the repository, hence
-# avoiding the error.
 brew untap --force homebrew/cask
-rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
-unset HOMEBREW_NO_INSTALL_FROM_API
 
 HOMEBREW_CLONE_RETRY_NB=3
 for i in $(seq 0 $HOMEBREW_CLONE_RETRY_NB); do
