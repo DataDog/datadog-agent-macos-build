@@ -44,14 +44,7 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 
 brew untap --force homebrew/cask
 
-HOMEBREW_CLONE_RETRY_NB=3
-for i in $(seq 0 $HOMEBREW_CLONE_RETRY_NB); do
-    (CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" && break) || echo "Homebrew installation failed !! Retrying in 15 sec..."
-    if [ $i = $HOMEBREW_CLONE_RETRY_NB ]; then
-        exit 1
-    fi
-    sleep 15
-done
+CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 
 # Add our custom repository
 brew tap DataDog/datadog-agent-macos-build
