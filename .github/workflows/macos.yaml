@@ -225,6 +225,7 @@ jobs:
       env:
         RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
+        TEAM_ID: ${{ secrets.TEAM_ID }}
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
         ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
       if: "${{ env.ENABLE_SIGN == 'true' }}"

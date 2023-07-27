@@ -37,5 +37,5 @@ echo "File to upload: $LATEST_DMG"
 # Send package for notarization; retrieve REQUEST_UUID
 echo "Sending notarization request."
 
-xcrun notarytool submit --apple-id "$APPLE_ACCOUNT" --password "$NOTARIZATION_PWD" "$LATEST_DMG" --wait
+xcrun notarytool submit --apple-id "$APPLE_ACCOUNT" --team-id "$TEAM_ID" --password "$NOTARIZATION_PWD" "$LATEST_DMG" --wait
 
