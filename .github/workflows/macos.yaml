@@ -1,7 +1,7 @@
 name: MacOS Agent build
 
 # Workflow inputs default values are set here instead of using the `defaults` keyword
-# so that the `pull_request` event can access them. 
+# so that the `pull_request` event can access them.
 #
 # Leaving an input empty will use the default value
 env:
@@ -211,7 +211,7 @@ jobs:
         # xpath is a perl tool, without Mozilla:CA certs installed notarization may fail
         # with SSL errors:
         # 500 Can't verify SSL peers without knowing which Certificate Authorities to trust http://www.apple.com/DTDs/PropertyList-1.0.dtd
-        for retries in {0..4}; do    
+        for retries in {0..4}; do
           if PERL_MM_USE_DEFAULT=1 cpan Mozilla::CA; then
             break
           fi
@@ -225,6 +225,7 @@ jobs:
       env:
         RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
+        TEAM_ID: ${{ secrets.TEAM_ID }}
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
         ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
       if: "${{ env.ENABLE_SIGN == 'true' }}"
