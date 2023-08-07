@@ -38,8 +38,11 @@ echo "File to upload: $LATEST_DMG"
 echo "Sending notarization request."
 
 RESULT=$(xcrun notarytool submit --apple-id "$APPLE_ACCOUNT" --team-id "$TEAM_ID" --password "$NOTARIZATION_PWD" "$LATEST_DMG" --wait)
+EXIT_CODE=$?
 echo "Results: $RESULT"
 SUBMISSION_ID=$(echo "$RESULT" | awk '$1 == "id:"{print $2; exit}')
 echo "Submission ID: $SUBMISSION_ID"
 echo "Submission logs:"
 xcrun notarytool log --apple-id "$APPLE_ACCOUNT" --team-id "$TEAM_ID" --password "$NOTARIZATION_PWD" "$SUBMISSION_ID"
+# Once we have some logs, propagate potential failures
+exit $EXIT_CODE
