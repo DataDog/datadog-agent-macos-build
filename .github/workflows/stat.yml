@@ -1,0 +1,13 @@
+name: test stat command
+
+on:
+  push:
+
+jobs:
+  test-stat:
+    runs-on: macos-11
+    steps:
+      # - name: Run stat -c
+      #   run: stat -c
+      - name: Run stat --format
+        run: stat --help
