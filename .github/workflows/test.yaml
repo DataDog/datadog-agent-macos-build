@@ -61,7 +61,7 @@ jobs:
         brew remove --force --ignore-dependencies $(brew list --formula)
 
     - name: Cache brew deps
-      uses: actions/cache@v3.3.1
+      uses: actions/cache@v3.3.2
       with:
         # Paths to cache:
         # /usr/local/Homebrew - installation folder of Homebrew
