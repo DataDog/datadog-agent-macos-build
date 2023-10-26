@@ -11,6 +11,7 @@ env:
   DEFAULT_PYTHON_RUNTIMES: '3'
   DEFAULT_BUCKET_BRANCH: 'nightly'
   DEFAULT_GITLAB_PIPELINE_ID: '0'
+  DEFAULT_INTEGRATIONS_CORE_REF: 'master'
 
 on:
   pull_request:
@@ -39,6 +40,9 @@ on:
         required: false
       version_cache:
         description: 'Base 64-encoded content of the agent-version.cache file'
+        required: false
+      integrations_core_ref:
+        description: 'git ref to target on integrations-core'
         required: false
 
 jobs:
@@ -180,6 +184,7 @@ jobs:
         ARTIFACTORY_URL: datadog.jfrog.io
         ARTIFACTORY_GEMS_PATH: artifactory/api/gems/agent-gems
         ARTIFACTORY_PYPI_PATH: artifactory/api/pypi/agent-pypi/simple
+        INTEGRATIONS_CORE_VERSION: ${{ github.event.inputs.integrations_core_ref || env.DEFAULT_INTEGRATIONS_CORE_REF }}
       run: |
         export GOMODCACHE=~/gomodcache
         if [ "${USE_CACHING_PROXY_RUBY}" = "true" ]; then export BUNDLE_MIRROR__RUBYGEMS__ORG=https://${ARTIFACTORY_USERNAME}:${ARTIFACTORY_TOKEN}@${ARTIFACTORY_URL}/${ARTIFACTORY_GEMS_PATH}; fi
