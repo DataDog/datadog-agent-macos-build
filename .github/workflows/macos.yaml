@@ -222,6 +222,7 @@ jobs:
           echo Failed after 4 retries && false
         fi
     - name: Notarize build
+      uses: nick-fields/retry@v2
       env:
         RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
@@ -229,8 +230,11 @@ jobs:
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
         ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
       if: "${{ env.ENABLE_SIGN == 'true' }}"
-      run: |
-        bash ./scripts/notarization_script.sh
+      with:
+        max_attempts: 3
+        retry_wait_seconds: 15
+        command: |
+          bash ./scripts/notarization_script.sh
 
     - name: Delete temporary keychain
       env:
