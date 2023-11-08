@@ -44,8 +44,8 @@ sudo mkdir -p /opt/datadog-agent /var/cache/omnibus && sudo chown "$USER" /opt/d
 inv check-go-version || exit 1
 
 # Update the INTEGRATION_CORE_VERSION if requested
-if [ -n "$INTEGRATION_CORE_REF" ]; then
-    export INTEGRATION_CORE_VERSION="$INTEGRATION_CORE_REF"
+if [ -n "$INTEGRATIONS_CORE_REF" ]; then
+    export INTEGRATIONS_CORE_VERSION="$INTEGRATIONS_CORE_REF"
 fi
 
 # Launch omnibus build
