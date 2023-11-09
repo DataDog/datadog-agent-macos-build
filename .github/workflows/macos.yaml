@@ -233,6 +233,7 @@ jobs:
       with:
         max_attempts: 3
         retry_wait_seconds: 15
+        timeout_seconds: 10
         command: |
           bash ./scripts/notarization_script.sh
 
