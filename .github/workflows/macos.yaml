@@ -233,7 +233,8 @@ jobs:
       with:
         max_attempts: 3
         retry_wait_seconds: 15
-        timeout_seconds: 60
+        # The notarization shouldn't take more than 10 minutes on average
+        timeout_minutes: 30
         command: |
           bash ./scripts/notarization_script.sh
 
