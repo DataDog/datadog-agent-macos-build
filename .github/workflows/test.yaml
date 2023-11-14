@@ -1,7 +1,7 @@
 name: MacOS Agent tests
 
 # Workflow inputs default values are set here instead of using the `defaults` keyword
-# so that the `pull_request` event can access them. 
+# so that the `pull_request` event can access them.
 #
 # Leaving an input empty will use the default value
 env:
