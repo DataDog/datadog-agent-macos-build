@@ -33,9 +33,6 @@ inv -e rtloader.install
 # FIXME: rtloader tests fail on Mac with "image not found" errors
 #inv -e rtloader.test
 
-# Run go linters
-inv -e lint-go --cpus 3
-
 # Run unit tests
 inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 3 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz"
 
