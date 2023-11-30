@@ -31,6 +31,8 @@ export PKG_CONFIG_VERSION=0.29.2
 export RUBY_VERSION=2.7.4
 export BUNDLER_VERSION=2.3.18
 export PYTHON_VERSION=3.9.6
+export RUST_VERSION=1.74.0
+export RUSTUP_VERSION=1.25.1
 # Pin cmake version without sphinx-doc, which causes build issues
 export CMAKE_VERSION=3.18.2.2
 export GIMME_VERSION=1.5.4
@@ -87,6 +89,13 @@ rm -f /usr/local/bin/2to3 \
       /usr/local/bin/python3-config
 brew install DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
+
+# Install rust
+# Rust may be needed to compile some python libs
+curl -sSL -o rustup-init https://static.rust-lang.org/rustup/archive/${RUSTUP_VERSION}/x86_64-apple-darwin/rustup-init \
+    && chmod +x ./rustup-init \
+    && ./rustup-init -y --profile minimal --default-toolchain ${RUST_VERSION} \
+    && rm ./rustup-init
 
 # Install gimme
 brew install DataDog/datadog-agent-macos-build/gimme@$GIMME_VERSION -f
