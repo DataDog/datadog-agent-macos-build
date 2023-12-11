@@ -1,4 +1,4 @@
-name: MacOS Agent tests
+name: MacOS Agent lint
 
 # Workflow inputs default values are set here instead of using the `defaults` keyword
 # so that the `pull_request` event can access them.
@@ -33,7 +33,7 @@ jobs:
       - name: ${{github.event.inputs.id}}
         run: echo run identifier ${{ inputs.id }}
 
-  macos_test:
+  macos_lint:
     runs-on: macos-11
     defaults:
       run:
@@ -90,21 +90,12 @@ jobs:
       run: |
         bash ./scripts/builder_setup.sh
 
-    - name: Run tests
+    - name: Lint
       env:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
         PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes || env.DEFAULT_PYTHON_RUNTIMES }}
       run: |
         export GOMODCACHE=~/gomodcache
         mkdir -p $GOMODCACHE
-        bash ./scripts/test_script.sh
+        bash ./scripts/lint.sh
 
-    - name: Upload unit test reports
-      uses: actions/upload-artifact@v3
-      if: "${{ always() }}"
-      with:
-        name: junit-files
-        path: |
-          ~/go/src/github.com/DataDog/datadog-agent/test_output.json
-          ~/go/src/github.com/DataDog/datadog-agent/junit-tests_macos.tgz
-        if-no-files-found: error
