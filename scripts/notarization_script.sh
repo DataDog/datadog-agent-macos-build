@@ -5,10 +5,7 @@
 # This product includes software developed at Datadog (https://www.datadoghq.com/)
 # Copyright 2022-present Datadog, Inc.
 
-# FIXME: Uncomment this once the build script is fixed, and we
-# check that this script doesn't accidentally exit early with set -e.
-
-# set -e
+set -e
 
 # Requests notarization of the Agent package to Apple.
 
