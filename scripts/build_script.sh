@@ -8,7 +8,7 @@
 # FIXME: Uncomment this once we fix the way we cache the builder setup
 # in datadog-agent-macos-build, we have non-critical errors that make
 # the script fail with set -e.
-# set -e
+set -e
 
 
 # Does an omnibus build of the Agent.
