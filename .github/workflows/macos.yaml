@@ -188,7 +188,7 @@ jobs:
         bash ./scripts/build_script.sh
 
     - name: Upload Agent .dmg
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}-dmg
         path: |
@@ -196,7 +196,7 @@ jobs:
         if-no-files-found: error
 
     - name: Upload Omnibus version manifest
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: version-manifest.json
         path: |
