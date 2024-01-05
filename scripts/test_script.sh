@@ -22,6 +22,7 @@ cd $GOPATH/src/github.com/DataDog/datadog-agent
 
 # Install python deps (invoke, etc.)
 python3 -m pip install -r requirements.txt
+python3 -m pip install -r tasks/libs/requirements-github.txt
 
 # Install dependencies
 inv -e install-tools
