@@ -45,7 +45,10 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 
 # There are a lot of dependencies we don't want nor need to install when linting:
 if [ $# -lt 1 ] || [ "$1" != "lint" ]; then
+    LINT_ONLY=1
+fi
 
+if [ -z "$LINT_ONLY" ]; then
 # NOTE: The macOS runner has HOMEBREW_NO_INSTALL_FROM_API set, which makes it
 # try to clone homebrew-core. At one point, cloning of homebrew-core started
 # returning the following error for us in about 50 % of cases:
@@ -63,9 +66,6 @@ CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/insta
 # Add our custom repository
 brew tap DataDog/datadog-agent-macos-build
 
-brew uninstall python@2 -f || true # Uninstall python 2 if present
-brew uninstall python -f || true # Uninstall python 3 if present
-
 # Install cmake
 brew install DataDog/datadog-agent-macos-build/cmake@$CMAKE_VERSION -f
 brew link --overwrite cmake@$CMAKE_VERSION
@@ -80,6 +80,11 @@ brew link --overwrite ruby@$RUBY_VERSION
 
 gem install bundler -v $BUNDLER_VERSION -f
 
+fi
+
+brew uninstall python@2 -f || true # Uninstall python 2 if present
+brew uninstall python -f || true # Uninstall python 3 if present
+
 # Install python
 # "brew link --overwrite" will refuse to overwrite links it doesn't own,
 # so we have to make sure these don't exist
@@ -91,6 +96,8 @@ rm -f /usr/local/bin/2to3 \
       /usr/local/bin/python3-config
 brew install DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
+
+if [ -z "$LINT_ONLY" ]; then
 
 # Install rust
 # Rust may be needed to compile some python libs
@@ -106,9 +113,7 @@ curl --retry 5 --fail "https://s3.amazonaws.com/dd-agent-omnibus/ibm-mq-backup/$
 sudo installer -pkg /tmp/mq_client.pkg -target /
 sudo rm -rf /tmp/mq_client.pkg
 
-# end of build only block
 fi
-# now we can install dependencies  that are also used for linting
 
 # Install gimme
 brew install DataDog/datadog-agent-macos-build/gimme@$GIMME_VERSION -f
