@@ -60,7 +60,7 @@ jobs:
           /usr/local/bin
           /usr/local/opt
           /usr/local/lib/python3.9
-        key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
+        key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}-lint
 
     - name: Clone datadog-agent repository
       env:
