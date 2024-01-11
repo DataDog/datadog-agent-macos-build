@@ -20,6 +20,9 @@ on:
       version_cache:
         description: 'Base 64-encoded content of the agent-version.cache file'
         required: false
+      python_runtimes:
+        description: 'kept for simplicity'
+        required: false
 
 jobs:
   id:
