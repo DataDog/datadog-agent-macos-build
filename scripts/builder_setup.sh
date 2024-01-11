@@ -43,6 +43,9 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 
 # Install or upgrade brew (will also install Command Line Tools)
 
+# There are a lot of dependencies we don't want nor need to install when linting:
+if [ $# -lt 1 ] || [ "$1" != "lint" ]; then
+
 # NOTE: The macOS runner has HOMEBREW_NO_INSTALL_FROM_API set, which makes it
 # try to clone homebrew-core. At one point, cloning of homebrew-core started
 # returning the following error for us in about 50 % of cases:
@@ -96,14 +99,19 @@ curl -sSL -o rustup-init https://static.rust-lang.org/rustup/archive/${RUSTUP_VE
     && ./rustup-init -y --profile minimal --default-toolchain ${RUST_VERSION} \
     && rm ./rustup-init
 
-# Install gimme
-brew install DataDog/datadog-agent-macos-build/gimme@$GIMME_VERSION -f
-brew link --overwrite gimme@$GIMME_VERSION
-eval `gimme $GO_VERSION`
-echo 'eval `gimme '$GO_VERSION'`' >> ~/.build_setup
 
 # Install IBM MQ
 sudo mkdir -p /opt/mqm
 curl --retry 5 --fail "https://s3.amazonaws.com/dd-agent-omnibus/ibm-mq-backup/${IBM_MQ_VERSION}-MacX64.pkg" -o /tmp/mq_client.pkg
 sudo installer -pkg /tmp/mq_client.pkg -target /
 sudo rm -rf /tmp/mq_client.pkg
+
+# end of build only block
+fi
+# now we can install dependencies  that are also used for linting
+
+# Install gimme
+brew install DataDog/datadog-agent-macos-build/gimme@$GIMME_VERSION -f
+brew link --overwrite gimme@$GIMME_VERSION
+eval `gimme $GO_VERSION`
+echo 'eval `gimme '$GO_VERSION'`' >> ~/.build_setup

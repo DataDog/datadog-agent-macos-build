@@ -73,7 +73,7 @@ jobs:
 
     - name: Set up builder
       run: |
-        bash ./scripts/builder_setup.sh
+        bash ./scripts/builder_setup.sh lint
 
     - name: Lint
       env:
