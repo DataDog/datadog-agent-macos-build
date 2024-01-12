@@ -44,7 +44,7 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 # Install or upgrade brew (will also install Command Line Tools)
 
 # There are a lot of dependencies we don't want nor need to install when linting:
-if [ $# -lt 1 ] || [ "$1" != "lint" ]; then
+if [ "$1" = "lint" ]; then
     LINT_ONLY=1
 fi
 
