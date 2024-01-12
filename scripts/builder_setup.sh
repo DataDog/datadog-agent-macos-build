@@ -80,8 +80,6 @@ brew link --overwrite ruby@$RUBY_VERSION
 
 gem install bundler -v $BUNDLER_VERSION -f
 
-fi
-
 brew uninstall python@2 -f || true # Uninstall python 2 if present
 brew uninstall python -f || true # Uninstall python 3 if present
 
@@ -96,8 +94,6 @@ rm -f /usr/local/bin/2to3 \
       /usr/local/bin/python3-config
 brew install DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
-
-if [ -z "$LINT_ONLY" ]; then
 
 # Install rust
 # Rust may be needed to compile some python libs
