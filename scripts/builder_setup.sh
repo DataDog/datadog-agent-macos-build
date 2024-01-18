@@ -33,8 +33,7 @@ export BUNDLER_VERSION=2.3.18
 export PYTHON_VERSION=3.11.5
 export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
-# Pin cmake version without sphinx-doc, which causes build issues
-export CMAKE_VERSION=3.18.2.2
+export CMAKE_VERSION=3.22.6
 export GIMME_VERSION=1.5.4
 
 export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
