@@ -222,7 +222,7 @@ jobs:
           echo Failed after 4 retries && false
         fi
     - name: Notarize build
-      uses: nick-fields/retry@v2
+      uses: nick-fields/retry@v3
       env:
         RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
