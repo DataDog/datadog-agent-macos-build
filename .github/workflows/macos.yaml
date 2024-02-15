@@ -45,7 +45,7 @@ on:
         required: false
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.inputs.concurrency_key || github.sha }}
+  group: ${{ github.workflow }}-${{ github.event.inputs.concurrency_key || github.event.inputs.datadog_agent_ref || github.sha }}
   cancel-in-progress: ${{ github.event.inputs.concurrency_key && true || false }}
 
 jobs:
