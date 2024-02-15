@@ -24,6 +24,9 @@ on:
       version_cache:
         description: 'Base 64-encoded content of the agent-version.cache file'
         required: false
+      concurrency_key:
+        description: 'concurrency key used to cancel running jobs'
+        required: false
 
 jobs:
   id:
