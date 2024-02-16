@@ -43,6 +43,9 @@ on:
       integrations_core_ref:
         description: 'git ref to target on integrations-core'
         required: false
+      concurrency_key:
+        description: 'concurrency key used to cancel running jobs'
+        required: false
 
 jobs:
   id:
