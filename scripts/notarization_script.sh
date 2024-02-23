@@ -8,7 +8,7 @@
 # FIXME: Uncomment this once the build script is fixed, and we
 # check that this script doesn't accidentally exit early with set -e.
 
-# set -e
+set -e
 
 # Requests notarization of the Agent package to Apple.
 
