@@ -34,8 +34,10 @@ inv -e rtloader.install
 # FIXME: rtloader tests fail on Mac with "image not found" errors
 #inv -e rtloader.test
 
+FAST_TESTS_FLAG=""
+if [ "$FAST_TESTS" = "true" ]; then FAST_TESTS_FLAG="--only-impacted-packages"; fi
 # Run unit tests
-inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 3 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz"
+inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 3 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG
 
 # Run invoke task tests
 inv -e invoke-unit-tests
