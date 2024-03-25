@@ -41,6 +41,17 @@ export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version
 export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 #export IBM_MQ_VERSION=9.2.2.0-IBM-MQ-Toolkit
 
+# Helper to run a command with retries
+function do_with_retries() {
+    local command="$1"
+    local retries="$2"
+    for i in $(seq 1 $2); do
+        res=0
+        /bin/bash -c "$1" && break || { res=1 && sleep $((2**$i)); }
+    done
+    return $res
+}
+
 # Install or upgrade brew (will also install Command Line Tools)
 
 # NOTE: The macOS runner has HOMEBREW_NO_INSTALL_FROM_API set, which makes it
@@ -53,9 +64,8 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 # avoiding the error.
 brew untap --force homebrew/cask
 rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
-unset HOMEBREW_NO_INSTALL_FROM_API
 
-CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+do_with_retries "CI=1; unset HOMEBREW_NO_INSTALL_FROM_API; $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" 5
 
 # Add our custom repository
 brew tap DataDog/datadog-agent-macos-build
