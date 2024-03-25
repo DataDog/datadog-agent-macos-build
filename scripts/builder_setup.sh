@@ -41,7 +41,8 @@ export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version
 export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 #export IBM_MQ_VERSION=9.2.2.0-IBM-MQ-Toolkit
 
-# Helper to run a command with retries
+# Helper to run a bash command with retries, with an exponential backoff.
+# Returns 1 if the provided command fails every time, 0 otherwise.
 function do_with_retries() {
     local command="$1"
     local retries="$2"
