@@ -45,9 +45,12 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 function do_with_retries() {
     local command="$1"
     local retries="$2"
-    for i in $(seq 1 $2); do
+    local res=0
+
+    for i in $(seq 0 $2); do
         res=0
-        /bin/bash -c "$1" && break || { res=1 && sleep $((2**$i)); }
+        sleep $((2**$i))
+        /bin/bash -c "$1" && break || res=1
     done
     return $res
 }
