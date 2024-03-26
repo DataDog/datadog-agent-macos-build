@@ -48,10 +48,10 @@ function do_with_retries() {
     local retries="$2"
     local res=0
 
-    for i in $(seq 0 $2); do
+    for i in $(seq 0 $retries); do
         res=0
         sleep $((2**$i))
-        /bin/bash -c "$1" && break || res=1
+        /bin/bash -c "$command" && break || res=1
     done
     return $res
 }
