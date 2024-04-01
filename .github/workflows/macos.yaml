@@ -91,7 +91,7 @@ jobs:
         rm -rf /usr/local/lib/ruby
 
     - name: Cache brew deps
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@v4.0.2
       with:
         # Paths to cache:
         # /usr/local/Homebrew - installation folder of Homebrew
