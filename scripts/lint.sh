@@ -18,7 +18,7 @@ set -e
 
 # Load build setup vars
 source ~/.build_setup
-cd $GOPATH/src/github.com/DataDog/datadog-agent
+cd "$GOPATH"/src/github.com/DataDog/datadog-agent
 
 # Install python deps (invoke, etc.)
 python3 -m pip install -r requirements.txt
@@ -28,5 +28,5 @@ inv -e install-tools
 inv -e deps
 
 # Run go linters
-inv -e lint-go --cpus 3
+inv -e linter.go --cpus 3
 
