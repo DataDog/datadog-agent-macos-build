@@ -28,5 +28,5 @@ inv -e install-tools
 inv -e deps
 
 # Run go linters
-inv -e lint-go --cpus 3
+inv -e lint-go --cpus 3 --timeout 60
 
