@@ -50,6 +50,7 @@ fi
 
 INVOKE_TASK="omnibus.build"
 if ! inv --list | grep -F "${INVOKE_TASK}"; then
+    echo -e "\033[0;31magent.omnibus-build is deprecated. Please use omnibus.build!\033[0m"
     INVOKE_TASK="agent.omnibus-build"
 fi
 
