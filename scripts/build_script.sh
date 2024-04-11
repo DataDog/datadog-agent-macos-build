@@ -48,13 +48,18 @@ if [ -n "$INTEGRATIONS_CORE_REF" ]; then
     export INTEGRATIONS_CORE_VERSION="$INTEGRATIONS_CORE_REF"
 fi
 
+INVOKE_TASK="omnibus.build"
+if ! inv --list | grep -F "${INVOKE_TASK}"; then
+    INVOKE_TASK="agent.omnibus-build"
+fi
+
 # Launch omnibus build
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
     security unlock-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
-    inv -e omnibus.build --hardened-runtime --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
+    inv -e ${INVOKE_TASK} --hardened-runtime --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
     # Lock the keychain once we're done
     security lock-keychain "$KEYCHAIN_NAME"
 else
-    inv -e omnibus.build --skip-sign --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
+    inv -e ${INVOKE_TASK} --skip-sign --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
 fi
