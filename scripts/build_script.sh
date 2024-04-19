@@ -54,6 +54,8 @@ if ! inv --list | grep -qF "$INVOKE_TASK"; then
     INVOKE_TASK="agent.omnibus-build"
 fi
 
+export OMNIBUS_GIT_CACHE_DIR=/tmp/omnibus-git-cache
+
 # Launch omnibus build
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
