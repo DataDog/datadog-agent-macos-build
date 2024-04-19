@@ -55,6 +55,10 @@ if ! inv --list | grep -qF "$INVOKE_TASK"; then
 fi
 
 export OMNIBUS_GIT_CACHE_DIR=/tmp/omnibus-git-cache
+# We still want to leverage the remote cache for macOS
+# Work around the job being ran on github.
+CI_JOB_NAME_SLUG="agent-dmg-$(uname -m)-a7"
+export CI_JOB_NAME_SLUG
 
 # Launch omnibus build
 if [ "$SIGN" = "true" ]; then
