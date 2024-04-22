@@ -35,6 +35,7 @@ export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
 export CMAKE_VERSION=3.22.6
 export GIMME_VERSION=1.5.4
+export CODECOV_VERSION=0.6.1
 
 export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
 # Newer version of IBM_MQ have a different name
@@ -83,9 +84,9 @@ brew link --overwrite cmake@$CMAKE_VERSION
 
 # Install codecov
 curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --keyring trustedkeys.gpg --import
-curl -Os https://cli.codecov.io/latest/macos/codecov
-curl -Os https://cli.codecov.io/latest/macos/codecov.SHA256SUM
-curl -Os https://cli.codecov.io/latest/macos/codecov.SHA256SUM.sig
+curl -Os https://cli.codecov.io/$CODECOV_VERSION/macos/codecov
+curl -Os https://cli.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM
+curl -Os https://cli.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM.sig
 gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
 rm codecov.SHA256SUM.sig codecov.SHA256SUM
 mv codecov /usr/local/bin/codecov
