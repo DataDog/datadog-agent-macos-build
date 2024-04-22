@@ -81,6 +81,16 @@ brew uninstall python -f || true # Uninstall python 3 if present
 brew install DataDog/datadog-agent-macos-build/cmake@$CMAKE_VERSION -f
 brew link --overwrite cmake@$CMAKE_VERSION
 
+# Install codecov
+curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --keyring trustedkeys.gpg --import
+curl -Os https://cli.codecov.io/latest/macos/codecov
+curl -Os https://cli.codecov.io/latest/macos/codecov.SHA256SUM
+curl -Os https://cli.codecov.io/latest/macos/codecov.SHA256SUM.sig
+gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
+rm codecov.SHA256SUM.sig codecov.SHA256SUM
+mv codecov /usr/local/bin/codecov
+chmod +x /usr/local/bin/codecov
+
 # Install pkg-config
 brew install DataDog/datadog-agent-macos-build/pkg-config@$PKG_CONFIG_VERSION -f
 brew link --overwrite pkg-config@$PKG_CONFIG_VERSION
