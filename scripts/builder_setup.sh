@@ -35,6 +35,7 @@ export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
 export CMAKE_VERSION=3.22.6
 export GIMME_VERSION=1.5.4
+export GPG_VERSION=2.4.5
 export CODECOV_VERSION=0.6.1
 
 export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
@@ -81,6 +82,9 @@ brew uninstall python -f || true # Uninstall python 3 if present
 # Install cmake
 brew install DataDog/datadog-agent-macos-build/cmake@$CMAKE_VERSION -f
 brew link --overwrite cmake@$CMAKE_VERSION
+
+# Install gpg
+brew install gnupg@$GPG_VERSION
 
 # Install codecov
 curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --keyring trustedkeys.gpg --import
