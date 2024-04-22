@@ -23,6 +23,9 @@ cd "$GOPATH"/src/github.com/DataDog/datadog-agent
 # Install python deps (invoke, etc.)
 python3 -m pip install -r requirements.txt
 
+# Test that codecov was installed properly
+codecov --help
+
 # Install dependencies
 inv -e install-tools
 inv -e deps
