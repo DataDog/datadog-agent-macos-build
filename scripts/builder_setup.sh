@@ -85,6 +85,7 @@ brew link --overwrite cmake@$CMAKE_VERSION
 
 # Install gpg
 brew install DataDog/datadog-agent-macos-build/gnupg@$GPG_VERSION -f
+brew link --overwrite gnupg@$GPG_VERSION
 
 # Install codecov
 curl https://uploader.codecov.io/verification.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import
