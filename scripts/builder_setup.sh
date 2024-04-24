@@ -87,11 +87,12 @@ brew link --overwrite cmake@$CMAKE_VERSION
 brew install DataDog/datadog-agent-macos-build/gnupg@$GPG_VERSION -f
 
 # Install codecov
-curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --keyring trustedkeys.gpg --import
-curl -Os https://cli.codecov.io/$CODECOV_VERSION/macos/codecov
-curl -Os https://cli.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM
-curl -Os https://cli.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM.sig
-gpg --verify codecov.SHA256SUM.sig codecov.SHA256SUM
+curl https://uploader.codecov.io/verification.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import
+curl -Os https://uploader.codecov.io/$CODECOV_VERSION/macos/codecov
+curl -Os https://uploader.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM
+curl -Os https://uploader.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM.sig
+gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
+shasum -a 256 -c codecov.SHA256SUM
 rm codecov.SHA256SUM.sig codecov.SHA256SUM
 mv codecov /usr/local/bin/codecov
 chmod +x /usr/local/bin/codecov
