@@ -37,9 +37,6 @@ export CMAKE_VERSION=3.22.6
 export GIMME_VERSION=1.5.4
 
 export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
-# Newer version of IBM_MQ have a different name
-export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
-#export IBM_MQ_VERSION=9.2.2.0-IBM-MQ-Toolkit
 
 # Helper to run a bash command with retries, with an exponential backoff.
 # Returns 1 if the provided command fails every time, 0 otherwise.
@@ -115,9 +112,3 @@ brew install DataDog/datadog-agent-macos-build/gimme@$GIMME_VERSION -f
 brew link --overwrite gimme@$GIMME_VERSION
 eval `gimme $GO_VERSION`
 echo 'eval `gimme '$GO_VERSION'`' >> ~/.build_setup
-
-# Install IBM MQ
-sudo mkdir -p /opt/mqm
-curl --retry 5 --fail "https://s3.amazonaws.com/dd-agent-omnibus/ibm-mq-backup/${IBM_MQ_VERSION}-MacX64.pkg" -o /tmp/mq_client.pkg
-sudo installer -pkg /tmp/mq_client.pkg -target /
-sudo rm -rf /tmp/mq_client.pkg
