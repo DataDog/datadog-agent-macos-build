@@ -83,7 +83,11 @@ brew uninstall python -f || true # Uninstall python 3 if present
 brew install DataDog/datadog-agent-macos-build/cmake@$CMAKE_VERSION -f
 brew link --overwrite cmake@$CMAKE_VERSION
 
-# Install gpg
+# Install pkg-config
+brew install DataDog/datadog-agent-macos-build/pkg-config@$PKG_CONFIG_VERSION -f
+brew link --overwrite pkg-config@$PKG_CONFIG_VERSION
+
+# Install gpg (depends on pkg-config)
 brew install DataDog/datadog-agent-macos-build/gnupg@$GPG_VERSION -f
 brew link --overwrite gnupg@$GPG_VERSION
 
@@ -97,10 +101,6 @@ shasum -a 256 -c codecov.SHA256SUM
 rm codecov.SHA256SUM.sig codecov.SHA256SUM
 mv codecov /usr/local/bin/codecov
 chmod +x /usr/local/bin/codecov
-
-# Install pkg-config
-brew install DataDog/datadog-agent-macos-build/pkg-config@$PKG_CONFIG_VERSION -f
-brew link --overwrite pkg-config@$PKG_CONFIG_VERSION
 
 # Install ruby (depends on pkg-config)
 brew install DataDog/datadog-agent-macos-build/ruby@$RUBY_VERSION -f
