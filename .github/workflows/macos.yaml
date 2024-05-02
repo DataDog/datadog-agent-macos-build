@@ -115,6 +115,11 @@ jobs:
         cd $HOME/go/src/github.com/DataDog/datadog-agent
         export VERSION_CACHE_CONTENT="${{github.event.inputs.version_cache}}"
         if [ ! -z "$VERSION_CACHE_CONTENT" ]; then base64 -d <(echo "$VERSION_CACHE_CONTENT") > ./agent-version.cache; fi
+        # Copy files used for the Omnibus ruby deps cache key
+        # This is to work around a limitation of GitHub Actions' `hashFiles()` function which requires
+        # files to be inside the workspace.
+        mkdir ${GITHUB_WORKSPACE}/_omnibus_cache_key_files
+        cp $HOME/go/src/github.com/DataDog/datadog-agent/{release.json,omnibus/Gemfile} ${GITHUB_WORKSPACE}/_omnibus_cache_key_files
 
     - name: Set up builder
       run: |
@@ -167,6 +172,14 @@ jobs:
         # Note: this feature is badly documented (and doesn't even appear in the command list if you run security --help...).
         # Note: we silence the output of this command because it contains metadata about the certificates.
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PWD" "build.keychain" &>/dev/null
+
+    - name: Cache Ruby dependencies required by Omnibus
+      uses: actions/cache@v4
+      with:
+        path: ~/go/src/github.com/DataDog/datadog-agent/omnibus/vendor/bundle
+        key: omnibus-deps-${{ hashFiles('_omnibus_cache_key_files/*') }}
+        restore-keys: |
+          omnibus-deps-
 
     - name: Run omnibus build
       env:
