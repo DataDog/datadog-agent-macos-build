@@ -41,6 +41,9 @@ sudo rm -rf /opt/datadog-agent ./vendor ./vendor-new /var/cache/omnibus/src/* ./
 # Create target folders
 sudo mkdir -p /opt/datadog-agent /var/cache/omnibus && sudo chown "$USER" /opt/datadog-agent /var/cache/omnibus
 
+# Set bundler install path to cached folder
+pushd omnibus && bundle config set --local path 'vendor/bundle' && popd
+
 inv check-go-version || exit 1
 
 # Update the INTEGRATION_CORE_VERSION if requested
