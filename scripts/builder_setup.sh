@@ -35,7 +35,7 @@ export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
 export CMAKE_VERSION=3.22.6
 export GIMME_VERSION=1.5.4
-export GPG_VERSION=2.4.5
+export GPG_VERSION=1.4.23
 export CODECOV_VERSION="v0.6.1"
 
 export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
