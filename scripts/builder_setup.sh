@@ -90,6 +90,8 @@ brew link --overwrite pkg-config@$PKG_CONFIG_VERSION
 # Install gpg (depends on pkg-config)
 brew install DataDog/datadog-agent-macos-build/gnupg@$GPG_VERSION -f
 brew link --overwrite gnupg@$GPG_VERSION
+# Adding gpgbin to the PATH to be able to call gpg and gpgv
+export PATH="/usr/local/opt/gnupg@1.4.23/libexec/gpgbin:$PATH"
 
 # Install codecov
 curl https://uploader.codecov.io/verification.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import
