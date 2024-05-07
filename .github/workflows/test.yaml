@@ -109,6 +109,7 @@ jobs:
     - name: Run tests
       env:
         FAST_TESTS: ${{ github.event.inputs.fast_tests || 'false' }}
+        TEST_WASHER: ${{ github.event.inputs.test_washer || 'false' }}
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
         PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes || env.DEFAULT_PYTHON_RUNTIMES }}
         GO_TEST_SKIP_FLAKE: ${{ github.event.inputs.go_test_skip_flake || 'true' }}
