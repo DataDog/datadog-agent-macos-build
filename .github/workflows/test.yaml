@@ -33,6 +33,9 @@ on:
       fast_tests:
         description: 'Boolean to enable fast unit tests'
         required: false
+      test_washer:
+        description: 'Boolean to enable test washer'
+        required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.inputs.concurrency_key || github.event.inputs.datadog_agent_ref || github.sha }}
