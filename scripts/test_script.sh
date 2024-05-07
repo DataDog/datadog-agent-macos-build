@@ -41,6 +41,3 @@ inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile 
 
 # Run invoke task tests
 inv -e invoke-unit-tests
-
-# Upload coverage reports to Codecov
-inv -e codecov
