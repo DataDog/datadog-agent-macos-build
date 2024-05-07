@@ -35,6 +35,8 @@ export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
 export CMAKE_VERSION=3.22.6
 export GIMME_VERSION=1.5.4
+export GPG_VERSION=1.4.23
+export CODECOV_VERSION=v0.6.1
 
 export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
 
@@ -81,6 +83,23 @@ brew link --overwrite cmake@$CMAKE_VERSION
 # Install pkg-config
 brew install DataDog/datadog-agent-macos-build/pkg-config@$PKG_CONFIG_VERSION -f
 brew link --overwrite pkg-config@$PKG_CONFIG_VERSION
+
+# Install gpg (depends on pkg-config)
+brew install DataDog/datadog-agent-macos-build/gnupg@$GPG_VERSION -f
+brew link --overwrite gnupg@$GPG_VERSION
+# Adding gpgbin to the PATH to be able to call gpg and gpgv
+export PATH="/usr/local/opt/gnupg@1.4.23/libexec/gpgbin:$PATH"
+
+# Install codecov
+curl https://uploader.codecov.io/verification.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import
+curl -Os https://uploader.codecov.io/$CODECOV_VERSION/macos/codecov
+curl -Os https://uploader.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM
+curl -Os https://uploader.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM.sig
+gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
+shasum -a 256 -c codecov.SHA256SUM
+rm codecov.SHA256SUM.sig codecov.SHA256SUM
+mv codecov /usr/local/bin/codecov
+chmod +x /usr/local/bin/codecov
 
 # Install ruby (depends on pkg-config)
 brew install DataDog/datadog-agent-macos-build/ruby@$RUBY_VERSION -f
