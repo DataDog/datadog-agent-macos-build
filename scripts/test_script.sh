@@ -36,8 +36,12 @@ inv -e rtloader.install
 
 FAST_TESTS_FLAG=""
 if [ "$FAST_TESTS" = "true" ]; then FAST_TESTS_FLAG="--only-impacted-packages"; fi
+
+TEST_WASHER_FLAG=""
+if [ "$TEST_WASHER" = "true" ]; then TEST_WASHER_FLAG="--test-washer"; fi
+
 # Run unit tests
-inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 3 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG
+inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 3 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
 
 # Run invoke task tests
 inv -e invoke-unit-tests
