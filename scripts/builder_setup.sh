@@ -30,7 +30,7 @@ source ~/.build_setup
 export PKG_CONFIG_VERSION=0.29.2
 export RUBY_VERSION=2.7.4
 export BUNDLER_VERSION=2.3.18
-export PYTHON_VERSION=3.9.6
+export PYTHON_VERSION=3.11.8
 export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
 export CMAKE_VERSION=3.22.6
@@ -111,11 +111,11 @@ gem install bundler -v $BUNDLER_VERSION -f
 # "brew link --overwrite" will refuse to overwrite links it doesn't own,
 # so we have to make sure these don't exist
 # see: https://github.com/actions/setup-python/issues/577
-rm -f /usr/local/bin/2to3 \
-      /usr/local/bin/idle3 \
-      /usr/local/bin/pydoc3 \
-      /usr/local/bin/python3 \
-      /usr/local/bin/python3-config
+rm -f /usr/local/bin/2to3* \
+      /usr/local/bin/idle3* \
+      /usr/local/bin/pydoc3* \
+      /usr/local/bin/python3* \
+      /usr/local/bin/python3*-config
 brew install DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
 
