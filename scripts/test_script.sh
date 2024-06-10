@@ -34,6 +34,8 @@ inv -e rtloader.install
 # FIXME: rtloader tests fail on Mac with "image not found" errors
 #inv -e rtloader.test
 
+inv -e agent.build
+
 FAST_TESTS_FLAG=""
 if [ "$FAST_TESTS" = "true" ]; then FAST_TESTS_FLAG="--only-impacted-packages"; fi
 # Run unit tests
