@@ -116,7 +116,7 @@ rm -f /usr/local/bin/2to3* \
       /usr/local/bin/pydoc3* \
       /usr/local/bin/python3* \
       /usr/local/bin/python3*-config
-brew install DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
+brew install --build-from-source DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
 
 # Install rust
