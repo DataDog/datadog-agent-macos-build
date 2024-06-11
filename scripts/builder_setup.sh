@@ -92,12 +92,13 @@ gem install bundler -v $BUNDLER_VERSION -f
 # "brew link --overwrite" will refuse to overwrite links it doesn't own,
 # so we have to make sure these don't exist
 # see: https://github.com/actions/setup-python/issues/577
+<<<<<<< HEAD
 rm -f /usr/local/bin/2to3 \
       /usr/local/bin/idle3 \
       /usr/local/bin/pydoc3 \
       /usr/local/bin/python3 \
       /usr/local/bin/python3-config
-brew install DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
+brew install --build-from-source DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
 
 # Install rust
