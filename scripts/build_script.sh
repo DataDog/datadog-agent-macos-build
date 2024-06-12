@@ -68,7 +68,7 @@ else
     inv -e $INVOKE_TASK --skip-sign --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
 fi
 
-for i in {1..30}; do
+for i in {1..300}; do
     ls -la ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/
     sleep 1
 done
