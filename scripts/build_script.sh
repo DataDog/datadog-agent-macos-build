@@ -67,3 +67,5 @@ if [ "$SIGN" = "true" ]; then
 else
     inv -e $INVOKE_TASK --skip-sign --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
 fi
+
+ls -la ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/
