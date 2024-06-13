@@ -68,7 +68,9 @@ else
     inv -e $INVOKE_TASK --skip-sign --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
 fi
 
+# HACK: Wait up to 5 minutes for the dmg file to be written
 for i in {1..300}; do
     ls -la ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/
+    if [[ $(du -B1 ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg | cut -f1) != "0" ]]; then break; fi
     sleep 1
 done
