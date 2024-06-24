@@ -46,7 +46,7 @@ COVERAGE_CACHE_FLAG=""
 if [ "$PUSH_COVERAGE_CACHE" = "true" ]; then COVERAGE_CACHE_FLAG="--push-coverage-cache"; elif [ "$PULL_COVERAGE_CACHE" = "true" ]; then COVERAGE_CACHE_FLAG="--pull-coverage-cache"; fi
 
 # Run unit tests
-inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
+inv -e test --rerun-fails=2 --coverage --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
 
 # Run invoke task tests
 inv -e invoke-unit-tests
