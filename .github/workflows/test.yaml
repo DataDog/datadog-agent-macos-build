@@ -36,6 +36,12 @@ on:
       test_washer:
         description: 'Boolean to enable test washer'
         required: false
+      push_coverage_cache:
+        description: 'Boolean to push the unit tests coverage cache to S3'
+        required: false
+      pull_coverage_cache:
+        description: 'Boolean to pull the unit tests coverage cache to S3'
+        required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.inputs.concurrency_key || github.event.inputs.datadog_agent_ref || github.sha }}
@@ -110,6 +116,8 @@ jobs:
       env:
         FAST_TESTS: ${{ github.event.inputs.fast_tests || 'false' }}
         TEST_WASHER: ${{ github.event.inputs.test_washer || 'false' }}
+        PUSH_COVERAGE_CACHE: ${{ github.event.inputs.push_coverage_cache || 'false' }}
+        PULL_COVERAGE_CACHE: ${{ github.event.inputs.pull_coverage_cache || 'false' }}
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
         PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes || env.DEFAULT_PYTHON_RUNTIMES }}
         GO_TEST_SKIP_FLAKE: ${{ github.event.inputs.go_test_skip_flake || 'true' }}
