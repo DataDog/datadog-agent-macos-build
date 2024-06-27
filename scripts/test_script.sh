@@ -52,4 +52,7 @@ inv -e test --rerun-fails=2 --coverage --python-runtimes $PYTHON_RUNTIMES --race
 inv -e invoke-unit-tests
 
 # Upload coverage reports to Codecov. Never fail on coverage upload.
+echo "WHAT IS HAPPENING HELP"
+echo "inv -e coverage.upload-to-codecov $COVERAGE_CACHE_FLAG --debug"
 inv -e coverage.upload-to-codecov $COVERAGE_CACHE_FLAG --debug
+echo "WHAT IS HAPPENING HELP 2"
