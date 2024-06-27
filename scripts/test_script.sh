@@ -52,4 +52,4 @@ inv -e test --rerun-fails=2 --coverage --python-runtimes $PYTHON_RUNTIMES --race
 inv -e invoke-unit-tests
 
 # Upload coverage reports to Codecov. Never fail on coverage upload.
-inv -e coverage.upload-to-codecov $COVERAGE_CACHE_FLAG --debug || true
+inv -e coverage.upload-to-codecov $COVERAGE_CACHE_FLAG --debug
