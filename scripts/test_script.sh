@@ -42,11 +42,17 @@ if [ "$FAST_TESTS" = "true" ]; then FAST_TESTS_FLAG="--only-impacted-packages"; 
 TEST_WASHER_FLAG=""
 if [ "$TEST_WASHER" = "true" ]; then TEST_WASHER_FLAG="--test-washer"; fi
 
+COVERAGE_CACHE_FLAG=""
+if [ "$PUSH_COVERAGE_CACHE" = "true" ]; then COVERAGE_CACHE_FLAG="--push-coverage-cache"; elif [ "$PULL_COVERAGE_CACHE" = "true" ]; then COVERAGE_CACHE_FLAG="--pull-coverage-cache"; fi
+
 # Run unit tests
-inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
+inv -e test --rerun-fails=2 --coverage --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
 
 # Run invoke task tests
 inv -e invoke-unit-tests
 
 # Upload coverage reports to Codecov. Never fail on coverage upload.
-inv -e codecov || true
+echo "WHAT IS HAPPENING HELP"
+echo "inv -e coverage.upload-to-codecov $COVERAGE_CACHE_FLAG --debug"
+inv -e coverage.upload-to-codecov $COVERAGE_CACHE_FLAG --debug
+echo "WHAT IS HAPPENING HELP 2"
