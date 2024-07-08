@@ -41,7 +41,7 @@ jobs:
         run: echo run identifier ${{ inputs.id }}
 
   macos_lint:
-    runs-on: macos-11
+    runs-on: macos-12
     defaults:
       run:
         shell: bash
@@ -74,15 +74,15 @@ jobs:
         # /usr/local/Homebrew - installation folder of Homebrew
         # /usr/local/Cellar - installation folder of Homebrew formulae
         # /usr/local/Frameworks, /usr/local/bin, /usr/local/opt - contain (links to) binaries installed by Homebrew formulae
-        # /usr/local/lib/python3.9 - Python3 packages installation
+        # /usr/local/lib/python3.11 - Python3 packages installation
         path: |
           /usr/local/Homebrew
           /usr/local/Cellar
           /usr/local/Frameworks
           /usr/local/bin
           /usr/local/opt
-          /usr/local/lib/python3.9
-        key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
+          /usr/local/lib/python3.11
+        key: macos-12-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
 
     - name: Clone datadog-agent repository
       env:
