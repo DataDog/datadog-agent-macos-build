@@ -68,9 +68,9 @@ jobs:
     - name: Checkout with submodules
       uses: actions/checkout@v4
 
-    - name: Use XCode 13.2
+    - name: Use XCode 14.2
       run: |
-        sudo xcode-select -s /Applications/Xcode_13.2.app
+        sudo xcode-select -s /Applications/Xcode_14.2.app
 
     - name: Remove preinstalled environment
       run: |
@@ -129,8 +129,8 @@ jobs:
       env:
         CODESIGNING_CERT_BASE64: ${{ secrets.CODESIGNING_CERT_B64 }}
         CODESIGNING_CERT_PASSPHRASE: ${{ secrets.CODESIGNING_CERT_PASSPHRASE }}
-        INSTALLER_CERT_BASE64: ${{ secrets.INSTALLER_CERT_B64 }}
-        INSTALLER_CERT_PASSPHRASE: ${{ secrets.INSTALLER_CERT_PASSPHRASE }}
+        INSTALLER_CERT_BASE64: ${{ secrets.INSTALLER_CERT_2024_B64 }}
+        INSTALLER_CERT_PASSPHRASE: ${{ secrets.INSTALLER_CERT_2024_PASSPHRASE }}
         KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
         ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
       if: "${{ env.ENABLE_SIGN != '' }}"
