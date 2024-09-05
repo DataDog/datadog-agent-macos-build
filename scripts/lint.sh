@@ -21,7 +21,10 @@ source ~/.build_setup
 cd "$GOPATH"/src/github.com/DataDog/datadog-agent
 
 # Install python deps (invoke, etc.)
-python3 -m pip install -r requirements.txt
+# Python 3.12 changes default behavior how packages are installed.
+# In particular, --break-system-packages command line option is 
+# required to use the old behavior.https://github.com/actions/runner-images/issues/8615
+python3 -m pip install -r requirements.txt --break-system-packages
 
 # Install dependencies
 inv -e install-tools
