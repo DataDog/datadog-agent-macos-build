@@ -33,7 +33,7 @@ source ~/.build_setup
 cd $GOPATH/src/github.com/DataDog/datadog-agent
 
 # Install python deps (invoke, etc.)
-python3 -m pip install -r requirements.txt
+python3 -m pip install -r requirements.txt --break-system-packages
 
 # Clean up previous builds
 sudo rm -rf /opt/datadog-agent ./vendor ./vendor-new /var/cache/omnibus/src/* ./omnibus/Gemfile.lock
