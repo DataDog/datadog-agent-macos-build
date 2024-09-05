@@ -30,10 +30,10 @@ source ~/.build_setup
 export PKG_CONFIG_VERSION=0.29.2
 export RUBY_VERSION=2.7.4
 export BUNDLER_VERSION=2.3.18
-export PYTHON_VERSION=3.12.4
+export PYTHON_VERSION=3.11.8
 export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
-export CMAKE_VERSION=3.30.2
+export CMAKE_VERSION=3.22.6
 export GIMME_VERSION=1.5.4
 export GPG_VERSION=1.4.23
 export CODECOV_VERSION=v0.6.1
@@ -56,6 +56,7 @@ function do_with_retries() {
 }
 
 # Install or upgrade brew (will also install Command Line Tools)
+
 
 # NOTE: The macOS runner has HOMEBREW_NO_INSTALL_FROM_API set, which makes it
 # try to clone homebrew-core. At one point, cloning of homebrew-core started
