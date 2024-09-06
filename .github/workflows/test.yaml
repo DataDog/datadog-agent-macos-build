@@ -5,7 +5,7 @@ name: MacOS Agent tests
 #
 # Leaving an input empty will use the default value
 env:
-  DEFAULT_DATADOG_AGENT_REF: 'main'
+  DEFAULT_DATADOG_AGENT_REF: '6ee2c6d86ad606030ca462fbc316584d5a56addd'
   DEFAULT_PYTHON_RUNTIMES: '3'
 
 on:
