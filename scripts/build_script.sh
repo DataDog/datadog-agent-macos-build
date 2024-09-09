@@ -62,6 +62,7 @@ fi
 
 # Launch omnibus build
 if [ "$SIGN" = "true" ]; then
+    export Python3_FIND_STRATEGY=LOCATION
     # Unlock the keychain to get access to the signing certificates
     security unlock-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
     inv -e $INVOKE_TASK --hardened-runtime --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
