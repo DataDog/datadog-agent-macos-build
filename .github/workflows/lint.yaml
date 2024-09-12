@@ -5,7 +5,7 @@ name: MacOS Agent lint
 #
 # Leaving an input empty will use the default value
 env:
-  DEFAULT_DATADOG_AGENT_REF: 'kyleneale/bump_python_312'
+  DEFAULT_DATADOG_AGENT_REF: 'main'
   DEFAULT_PYTHON_RUNTIMES: '3'
 
 on:
