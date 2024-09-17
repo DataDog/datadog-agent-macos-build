@@ -118,6 +118,8 @@ rm -f /usr/local/bin/2to3* \
       /usr/local/bin/python3*-config
 brew install --build-from-source DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
+# Put homebrew Python ahead of system Python
+echo 'export PATH="/usr/local/opt/python@'"${PYTHON_VERSION}"'/libexec/bin:$PATH"' >> ~/.build_setup
 
 # Install rust
 # Rust may be needed to compile some python libs
