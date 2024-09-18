@@ -28,10 +28,6 @@
 export RELEASE_VERSION=${RELEASE_VERSION:-$VERSION}
 export KEYCHAIN_NAME=${KEYCHAIN_NAME:-"login.keychain"}
 
-# Put homebrew Python ahead of system Python
-# https://stackoverflow.com/a/48101303
-export PATH="/usr/local/opt/python@3.11.8/libexec/bin:$PATH"
-
 # Load build setup vars
 source ~/.build_setup
 cd $GOPATH/src/github.com/DataDog/datadog-agent
