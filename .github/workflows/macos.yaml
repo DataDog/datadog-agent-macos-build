@@ -112,7 +112,7 @@ jobs:
     - name: Clone datadog-agent repository
       env:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
-      uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
+      uses: nick-fields/retry@v3
       with:
         max_attempts: 3
         timeout_minutes: 5
@@ -253,7 +253,7 @@ jobs:
           echo Failed after 4 retries && false
         fi
     - name: Notarize build
-      uses: nick-fields/retry@v3
+      uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
       env:
         RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
