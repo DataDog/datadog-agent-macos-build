@@ -52,6 +52,7 @@ jobs:
         VERSION: hello
       with:
         max_attempts: 3
+        timeout_minutes: 30
         command: |
           echo "$VERSION"
           echo fail
