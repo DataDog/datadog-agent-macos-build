@@ -100,6 +100,7 @@ jobs:
       with:
         max_attempts: 3
         timeout_minutes: 10
+        retry_wait_seconds: 15
         command: |
           bash ./scripts/clone_agent.sh
           cd $HOME/go/src/github.com/DataDog/datadog-agent
