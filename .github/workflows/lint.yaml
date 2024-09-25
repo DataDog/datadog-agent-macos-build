@@ -90,7 +90,7 @@ jobs:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
       with:
         max_attempts: 3
-        timeout_minutes: 10
+        timeout_minutes: 5
         retry_wait_seconds: 15
         command: |
           bash ./scripts/clone_agent.sh

@@ -115,7 +115,7 @@ jobs:
       uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
       with:
         max_attempts: 3
-        timeout_minutes: 10
+        timeout_minutes: 5
         retry_wait_seconds: 15
         command: |
           bash ./scripts/clone_agent.sh
