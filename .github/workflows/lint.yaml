@@ -85,7 +85,7 @@ jobs:
         key: macos-12-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
 
     - name: Clone datadog-agent repository
-      uses: nick-fields/retry@v3
+      uses: nick-fields/retry@7152eba30c6575329ac0576536151aca5a72780e # v3.0.0
       env:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
       with:
