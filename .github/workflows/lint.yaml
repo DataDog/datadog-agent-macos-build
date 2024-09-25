@@ -46,6 +46,17 @@ jobs:
       run:
         shell: bash
     steps:
+    - name: Test
+      uses: nick-fields/retry@v3
+      env:
+        VERSION: hello
+      with:
+        max_attempts: 3
+        command: |
+          echo "$VERSION"
+          echo fail
+          exit 1
+
     - name: Checkout with submodules
       uses: actions/checkout@v4
 
