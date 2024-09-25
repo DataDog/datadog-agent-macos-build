@@ -46,18 +46,6 @@ jobs:
       run:
         shell: bash
     steps:
-    - name: Test
-      uses: nick-fields/retry@v3
-      env:
-        VERSION: hello
-      with:
-        max_attempts: 3
-        timeout_minutes: 30
-        command: |
-          echo "$VERSION"
-          echo fail
-          exit 1
-
     - name: Checkout with submodules
       uses: actions/checkout@v4
 
@@ -102,6 +90,7 @@ jobs:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
       with:
         max_attempts: 3
+        timeout_minutes: 10
         command: |
           bash ./scripts/clone_agent.sh
           cd $HOME/go/src/github.com/DataDog/datadog-agent
