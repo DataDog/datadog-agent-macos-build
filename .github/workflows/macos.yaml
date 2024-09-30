@@ -229,6 +229,10 @@ jobs:
           ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/version-manifest.json
         if-no-files-found: error
 
+    - name: Check state after omnibus build
+      run: |
+        ls /opt/datadog-agent 2>/dev/null || echo "/opt/datadog-agent doesn't exist as expected -- SUCCESS"
+
     - name: Add Mozilla certs to perl env for notarization
       env:
         ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
