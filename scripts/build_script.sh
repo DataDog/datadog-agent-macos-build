@@ -61,7 +61,7 @@ fi
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
     security unlock-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
-    mkdir /custom
+    mkdir "/custom"
     export INSTALL_DIR="/custom/datadog-agent"
     inv -e $INVOKE_TASK --hardened-runtime --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" --install-directory "$INSTALL_DIR" || exit 1
     # Lock the keychain once we're done
