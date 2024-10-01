@@ -33,7 +33,7 @@ export BUNDLER_VERSION=2.3.18
 export PYTHON_VERSION=3.11.8
 export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
-export CMAKE_VERSION=3.22.6
+export CMAKE_VERSION=3.30.2
 export GIMME_VERSION=1.5.4
 export GPG_VERSION=1.4.23
 export CODECOV_VERSION=v0.6.1
@@ -118,6 +118,8 @@ rm -f /usr/local/bin/2to3* \
       /usr/local/bin/python3*-config
 brew install --build-from-source DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
+# Put homebrew Python ahead of system Python
+echo 'export PATH="/usr/local/opt/python@'"${PYTHON_VERSION}"'/libexec/bin:$PATH"' >> ~/.build_setup
 
 # Install rust
 # Rust may be needed to compile some python libs
