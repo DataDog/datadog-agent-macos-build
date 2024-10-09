@@ -60,7 +60,7 @@ jobs:
         run: echo run identifier ${{ inputs.id }}
 
   macos_build:
-    runs-on: macos-11
+    runs-on: macos-12
     defaults:
       run:
         shell: bash
@@ -68,9 +68,9 @@ jobs:
     - name: Checkout with submodules
       uses: actions/checkout@v4
 
-    - name: Use XCode 13.2
+    - name: Use XCode 14.2
       run: |
-        sudo xcode-select -s /Applications/Xcode_13.2.app
+        sudo xcode-select -s /Applications/Xcode_14.2.app
 
     - name: Remove preinstalled environment
       run: |
@@ -89,6 +89,8 @@ jobs:
         # Also completely remove the ruby env, otherwise some files remain after the formula uninstall,
         # possibly causing gem version mismatch issues (eg. bundler).
         rm -rf /usr/local/lib/ruby
+        # Remove existing Python installation as it may otherwise interfere
+        sudo rm -rf /Library/Frameworks/Python.framework/Versions/*
 
     - name: Cache brew deps
       uses: actions/cache@v4.0.0
@@ -97,15 +99,15 @@ jobs:
         # /usr/local/Homebrew - installation folder of Homebrew
         # /usr/local/Cellar - installation folder of Homebrew formulae
         # /usr/local/Frameworks, /usr/local/bin, /usr/local/opt - contain (links to) binaries installed by Homebrew formulae
-        # /usr/local/lib/python3.9 - Python3 packages installation
+        # /usr/local/lib/python3.11 - Python3 packages installation
         path: |
           /usr/local/Homebrew
           /usr/local/Cellar
           /usr/local/Frameworks
           /usr/local/bin
           /usr/local/opt
-          /usr/local/lib/python3.9
-        key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}-v2
+          /usr/local/lib/python3.11
+        key: macos-12-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}-v2
 
     - name: Clone datadog-agent repository
       env:
@@ -115,6 +117,11 @@ jobs:
         cd $HOME/go/src/github.com/DataDog/datadog-agent
         export VERSION_CACHE_CONTENT="${{github.event.inputs.version_cache}}"
         if [ ! -z "$VERSION_CACHE_CONTENT" ]; then base64 -d <(echo "$VERSION_CACHE_CONTENT") > ./agent-version.cache; fi
+        # Copy files used for the Omnibus ruby deps cache key
+        # This is to work around a limitation of GitHub Actions' `hashFiles()` function which requires
+        # files to be inside the workspace.
+        mkdir ${GITHUB_WORKSPACE}/_omnibus_cache_key_files
+        cp $HOME/go/src/github.com/DataDog/datadog-agent/{release.json,omnibus/Gemfile} ${GITHUB_WORKSPACE}/_omnibus_cache_key_files
 
     - name: Set up builder
       run: |
@@ -124,8 +131,8 @@ jobs:
       env:
         CODESIGNING_CERT_BASE64: ${{ secrets.CODESIGNING_CERT_B64 }}
         CODESIGNING_CERT_PASSPHRASE: ${{ secrets.CODESIGNING_CERT_PASSPHRASE }}
-        INSTALLER_CERT_BASE64: ${{ secrets.INSTALLER_CERT_B64 }}
-        INSTALLER_CERT_PASSPHRASE: ${{ secrets.INSTALLER_CERT_PASSPHRASE }}
+        INSTALLER_CERT_BASE64: ${{ secrets.INSTALLER_CERT_2024_B64 }}
+        INSTALLER_CERT_PASSPHRASE: ${{ secrets.INSTALLER_CERT_2024_PASSPHRASE }}
         KEYCHAIN_PWD: ${{ secrets.KEYCHAIN_PASSWORD }}
         ENABLE_SIGN: ${{ secrets.ENABLE_SIGN }}
       if: "${{ env.ENABLE_SIGN != '' }}"
@@ -167,6 +174,14 @@ jobs:
         # Note: this feature is badly documented (and doesn't even appear in the command list if you run security --help...).
         # Note: we silence the output of this command because it contains metadata about the certificates.
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PWD" "build.keychain" &>/dev/null
+
+    - name: Cache Ruby dependencies required by Omnibus
+      uses: actions/cache@v4
+      with:
+        path: ~/go/src/github.com/DataDog/datadog-agent/omnibus/vendor/bundle
+        key: omnibus-deps-${{ hashFiles('_omnibus_cache_key_files/*') }}
+        restore-keys: |
+          omnibus-deps-
 
     - name: Run omnibus build
       env:
