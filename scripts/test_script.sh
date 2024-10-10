@@ -26,8 +26,9 @@ cd $GOPATH/src/github.com/DataDog/datadog-agent
 # In particular, --break-system-packages command line option is 
 # required to use the old behavior or use a virtual env. https://github.com/actions/runner-images/issues/8615
 python3 -m venv .venv
-.venv/bin/pip install -r requirements.txt
-.venv/bin/pip install -r tasks/libs/requirements-github.txt
+source .venv/bin/activate
+python3 -m pip install -r requirements.txt
+python3 -m pip install -r tasks/libs/requirements-github.txt
 
 # Install dependencies
 inv -e install-tools
