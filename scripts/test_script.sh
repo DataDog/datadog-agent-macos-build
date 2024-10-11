@@ -14,7 +14,6 @@ set -e
 # - clone_agent.sh has been run
 # - builder_setup.sh has been run
 # - $VERSION contains the datadog-agent git ref to target
-# - $PYTHON_RUNTIMES contains the included python runtimes
 
 # Load build setup vars
 source ~/.build_setup
@@ -29,7 +28,7 @@ inv -e install-tools
 inv -e deps
 
 # Run rtloader test
-inv -e rtloader.make --python-runtimes $PYTHON_RUNTIMES
+inv -e rtloader.make
 inv -e rtloader.install
 # FIXME: rtloader tests fail on Mac with "image not found" errors
 #inv -e rtloader.test
@@ -43,7 +42,7 @@ TEST_WASHER_FLAG=""
 if [ "$TEST_WASHER" = "true" ]; then TEST_WASHER_FLAG="--test-washer"; fi
 
 # Run unit tests
-inv -e test --rerun-fails=2 --python-runtimes $PYTHON_RUNTIMES --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
+inv -e test --rerun-fails=2 --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
 
 # Run invoke task tests
 inv -e invoke-unit-tests.run
