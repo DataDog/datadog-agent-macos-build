@@ -19,6 +19,7 @@
 # - $VERSION contains the datadog-agent git ref to target
 # - $RELEASE_VERSION contains the release.json version to package. Defaults to $VERSION
 # - $AGENT_MAJOR_VERSION contains the major version to release
+# - $PYTHON_RUNTIMES contains the included python runtimes
 # - $SIGN set to true if signing is enabled
 # - if $SIGN is set to true:
 #   - $KEYCHAIN_NAME contains the keychain name. Defaults to login.keychain
@@ -60,9 +61,9 @@ fi
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
     security unlock-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
-    inv -e $INVOKE_TASK --hardened-runtime --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
+    inv -e $INVOKE_TASK --hardened-runtime --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
     # Lock the keychain once we're done
     security lock-keychain "$KEYCHAIN_NAME"
 else
-    inv -e $INVOKE_TASK --skip-sign --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
+    inv -e $INVOKE_TASK --skip-sign --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
 fi
