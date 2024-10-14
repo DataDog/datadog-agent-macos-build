@@ -41,7 +41,7 @@ jobs:
         run: echo run identifier ${{ inputs.id }}
 
   macos_lint:
-    runs-on: macos-13
+    runs-on: macos-12
     defaults:
       run:
         shell: bash
@@ -82,7 +82,7 @@ jobs:
           /usr/local/bin
           /usr/local/opt
           /usr/local/lib/python3.11
-        key: macos-13-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
+        key: macos-12-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
 
     - name: Clone datadog-agent repository
       env:
