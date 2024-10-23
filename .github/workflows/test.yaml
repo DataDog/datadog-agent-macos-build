@@ -62,7 +62,7 @@ jobs:
       run: |
         sudo xcode-select -s /Applications/Xcode_14.2.app
 
-    - name: Remove preinstalled brew packages
+    - name: Remove preinstalled environment
       run: |
         # The base box ships a few things that can have unwanted effects on the MacOS build.
         # For instance, we compile Python in the pipeline. If Python finds some libraries while
@@ -75,6 +75,9 @@ jobs:
         # In order to avoid such cases in the future where we use things we didn't expect to, we'd rather
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
         brew remove --force --ignore-dependencies $(brew list --formula)
+
+        # Remove existing Python installation as it may otherwise interfere
+        sudo rm -rf /Library/Frameworks/Python.framework/Versions/*
 
     - name: Cache brew deps
       uses: actions/cache@v4.0.0
