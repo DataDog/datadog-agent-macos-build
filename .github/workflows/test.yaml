@@ -62,6 +62,10 @@ jobs:
       run: |
         sudo xcode-select -s /Applications/Xcode_14.2.app
 
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
     - name: Remove preinstalled brew packages
       run: |
         # The base box ships a few things that can have unwanted effects on the MacOS build.
