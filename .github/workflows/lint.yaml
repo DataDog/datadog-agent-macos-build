@@ -6,7 +6,6 @@ name: MacOS Agent lint
 # Leaving an input empty will use the default value
 env:
   DEFAULT_DATADOG_AGENT_REF: 'main'
-  DEFAULT_PYTHON_RUNTIMES: '3'
 
 on:
   pull_request:
@@ -17,9 +16,6 @@ on:
         required: false
       datadog_agent_ref:
         description: 'git ref to target on datadog-agent'
-        required: false
-      python_runtimes:
-        description: 'Included python runtimes in the build'
         required: false
       version_cache:
         description: 'Base 64-encoded content of the agent-version.cache file'
@@ -103,7 +99,6 @@ jobs:
     - name: Lint
       env:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
-        PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes || env.DEFAULT_PYTHON_RUNTIMES }}
       run: |
         export GOMODCACHE=~/gomodcache
         mkdir -p $GOMODCACHE
