@@ -19,7 +19,6 @@
 # - $VERSION contains the datadog-agent git ref to target
 # - $RELEASE_VERSION contains the release.json version to package. Defaults to $VERSION
 # - $AGENT_MAJOR_VERSION contains the major version to release
-# - $PYTHON_RUNTIMES contains the included python runtimes
 # - $SIGN set to true if signing is enabled
 # - if $SIGN is set to true:
 #   - $KEYCHAIN_NAME contains the keychain name. Defaults to login.keychain
