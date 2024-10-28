@@ -14,6 +14,7 @@ set -e
 # - clone_agent.sh has been run
 # - builder_setup.sh has been run
 # - $VERSION contains the datadog-agent git ref to target
+# - $PYTHON_RUNTIMES contains the included python runtimes
 
 # Load build setup vars
 source ~/.build_setup
