@@ -63,6 +63,12 @@ if ! inv --list | grep -qF "$INVOKE_TASK"; then
     INVOKE_TASK="agent.omnibus-build"
 fi
 
+# Set up installation on a different folder than the standard one
+sudo mkdir -p /opt/alt-path && sudo chown "$USER" /opt/alt-path
+export CONFIG_DIR="/opt/alt-path/config"
+export INSTALL_DIR="/opt/alt-path/datadog-agent"
+
+
 # Launch omnibus build
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
