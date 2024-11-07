@@ -30,13 +30,14 @@ source ~/.build_setup
 export PKG_CONFIG_VERSION=0.29.2
 export RUBY_VERSION=2.7.4
 export BUNDLER_VERSION=2.3.18
-export PYTHON_VERSION=3.11.8
+export PYTHON_VERSION=3.12.6
 export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
 export CMAKE_VERSION=3.30.2
 export GIMME_VERSION=1.5.4
 export GPG_VERSION=1.4.23
 export CODECOV_VERSION=v0.6.1
+export OPENSSL_VERSION=1.1
 
 export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
 
@@ -100,6 +101,12 @@ shasum -a 256 -c codecov.SHA256SUM
 rm codecov.SHA256SUM.sig codecov.SHA256SUM
 mv codecov /usr/local/bin/codecov
 chmod +x /usr/local/bin/codecov
+
+# Install openssl
+# Homebrew disabled the ability to install openssl@1.1 
+# so we need to install it from our tap
+brew install DataDog/datadog-agent-macos-build/openssl@${OPENSSL_VERSION} -f
+brew link --overwrite openssl@${OPENSSL_VERSION}
 
 # Install ruby (depends on pkg-config)
 brew install DataDog/datadog-agent-macos-build/ruby@$RUBY_VERSION -f
