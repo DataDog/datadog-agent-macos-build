@@ -37,7 +37,7 @@ echo "File to upload: $LATEST_DMG"
 # Send package for notarization; retrieve REQUEST_UUID
 echo "Sending notarization request."
 
-RESULT=$(xcrun notarytool submit --apple-id "$APPLE_ACCOUNT" --team-id "$TEAM_ID" --password "$NOTARIZATION_PWD" "$LATEST_DMG" --wait)
+RESULT=$(xcrun notarytool submit --apple-id "$APPLE_ACCOUNT" --team-id "$TEAM_ID" --password "$NOTARIZATION_PWD" "$LATEST_DMG" --wait --timeout 20m)
 EXIT_CODE=$?
 echo "Results: $RESULT"
 SUBMISSION_ID=$(echo "$RESULT" | awk '$1 == "id:"{print $2; exit}')
