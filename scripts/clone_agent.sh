@@ -16,11 +16,9 @@ echo 'export PATH="$GOPATH/bin:$PATH"' >> ~/.build_setup
 
 source ~/.build_setup
 
-git config --global http.postBuffer 524288000
-
 # Clone the repo
 mkdir -p $GOPATH/src/github.com/DataDog && cd $GOPATH/src/github.com/DataDog
-GIT_CURL_VERBOSE=1 git clone https://github.com/DataDog/datadog-agent || true # git clone fails if the datadog-agent repo is already there
+GIT_HTTP_LOW_SPEED_LIMIT=0 GIT_HTTP_LOW_SPEED_TIME=999999 git clone https://github.com/DataDog/datadog-agent || true # git clone fails if the datadog-agent repo is already there
 
 cd $GOPATH/src/github.com/DataDog/datadog-agent
 
