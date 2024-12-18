@@ -10,6 +10,28 @@
 # Prerequisites:
 # - $VERSION contains the datadog-agent git ref to target
 
+# Git command that will run up to 3 times before failing
+git_with_retries()
+{
+    for i in 1 2 3; do
+        git "$@"
+        status=$?
+        if [ $status -ne 0 ]; then
+            echo "Failed to run git $1 command"
+
+            if [ $i -lt 3 ]; then
+                echo "Retrying in 5 seconds..."
+                sleep 5
+            fi
+        else
+            # Worked, no need to retry
+            break
+        fi
+    done
+
+    return $status
+}
+
 mkdir -p $HOME/go
 echo 'export GOPATH=$HOME/go' >> ~/.build_setup
 echo 'export PATH="$GOPATH/bin:$PATH"' >> ~/.build_setup
@@ -22,10 +44,12 @@ git config --global http.postBuffer 524288000
 
 # Clone the repo
 mkdir -p $GOPATH/src/github.com/DataDog && cd $GOPATH/src/github.com/DataDog
-git clone https://github.com/DataDog/datadog-agent || true # git clone fails if the datadog-agent repo is already there
+if ! [ -d $GOPATH/src/github.com/DataDog/datadog-agent ]; then
+    git_with_retries clone https://github.com/DataDog/datadog-agent
+fi
 
 cd $GOPATH/src/github.com/DataDog/datadog-agent
 
 # Checkout to correct version
-git pull
-git checkout "$VERSION"
+git_with_retries pull
+git_with_retries checkout "$VERSION"
