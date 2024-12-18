@@ -38,6 +38,10 @@ echo 'export PATH="$GOPATH/bin:$PATH"' >> ~/.build_setup
 
 source ~/.build_setup
 
+# Seems to prevent clone failure see
+# https://app.datadoghq.com/incidents/33043
+git config --global http.postBuffer 524288000
+
 # Clone the repo
 mkdir -p $GOPATH/src/github.com/DataDog && cd $GOPATH/src/github.com/DataDog
 if ! [ -d $GOPATH/src/github.com/DataDog/datadog-agent ]; then

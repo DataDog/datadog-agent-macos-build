@@ -33,6 +33,12 @@ source ~/.build_setup
 cd $GOPATH/src/github.com/DataDog/datadog-agent
 
 # Install python deps (invoke, etc.)
+
+# Python 3.12 changes default behavior how packages are installed.
+# In particular, --break-system-packages command line option is 
+# required to use the old behavior or use a virtual env. https://github.com/actions/runner-images/issues/8615
+python3 -m venv .venv
+source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 
 # Clean up previous builds
@@ -61,9 +67,9 @@ fi
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
     security unlock-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
-    inv -e $INVOKE_TASK --hardened-runtime --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
+    inv -e $INVOKE_TASK --hardened-runtime --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
     # Lock the keychain once we're done
     security lock-keychain "$KEYCHAIN_NAME"
 else
-    inv -e $INVOKE_TASK --skip-sign --python-runtimes "$PYTHON_RUNTIMES" --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
+    inv -e $INVOKE_TASK --skip-sign --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
 fi
