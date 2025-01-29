@@ -63,6 +63,9 @@ if ! inv --list | grep -qF "$INVOKE_TASK"; then
     INVOKE_TASK="agent.omnibus-build"
 fi
 
+inv --list
+inv -h "$INVOKE_TASK"
+
 echo "--- CC ---"
 mkdir -p /tmp/celian/bin /tmp/celian/config
 echo "Old install dir: $INSTALL_DIR"
@@ -72,12 +75,16 @@ export CONFIG_DIR=/tmp/celian/config
 
 # Launch omnibus build
 if [ "$SIGN" = "true" ]; then
+    echo SIGNING
+
     # Unlock the keychain to get access to the signing certificates
     security unlock-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
     inv -e $INVOKE_TASK --hardened-runtime --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" --config-directory "$CONFIG_DIR" --install-directory "$INSTALL_DIR" || exit 1
     # Lock the keychain once we're done
     security lock-keychain "$KEYCHAIN_NAME"
 else
+    echo NOT SIGNING
+
     inv -e $INVOKE_TASK --skip-sign --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" --config-directory "$CONFIG_DIR" --install-directory "$INSTALL_DIR" || exit 1
 fi
 
