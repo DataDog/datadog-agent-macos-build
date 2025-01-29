@@ -27,6 +27,11 @@
 
 export RELEASE_VERSION=${RELEASE_VERSION:-$VERSION}
 export KEYCHAIN_NAME=${KEYCHAIN_NAME:-"login.keychain"}
+echo "Old install dir: $INSTALL_DIR"
+echo "Old config dir: $CONFIG_DIR"
+export INSTALL_DIR=/tmp/celian/bin
+export CONFIG_DIR=/tmp/celian/config
+mkdir -p "$INSTALL_DIR" "$CONFIG_DIR"
 
 # Load build setup vars
 source ~/.build_setup
@@ -42,10 +47,10 @@ source .venv/bin/activate
 python3 -m pip install -r requirements.txt
 
 # Clean up previous builds
-sudo rm -rf /opt/datadog-agent ./vendor ./vendor-new /var/cache/omnibus/src/* ./omnibus/Gemfile.lock
+sudo rm -rf "$INSTALL_DIR" "$CONFIG_DIR" ./vendor ./vendor-new /var/cache/omnibus/src/* ./omnibus/Gemfile.lock
 
 # Create target folders
-sudo mkdir -p /opt/datadog-agent /var/cache/omnibus && sudo chown "$USER" /opt/datadog-agent /var/cache/omnibus
+sudo mkdir -p "$INSTALL_DIR" "$CONFIG_DIR" /var/cache/omnibus && sudo chown "$USER" "$INSTALL_DIR" "$CONFIG_DIR" /var/cache/omnibus
 
 # Set bundler install path to cached folder
 pushd omnibus && bundle config set --local path 'vendor/bundle' && popd
@@ -63,15 +68,7 @@ if ! inv --list | grep -qF "$INVOKE_TASK"; then
     INVOKE_TASK="agent.omnibus-build"
 fi
 
-inv --list
-inv -h "$INVOKE_TASK"
-
 echo "--- CC ---"
-mkdir -p /tmp/celian/bin /tmp/celian/config
-echo "Old install dir: $INSTALL_DIR"
-echo "Old config dir: $CONFIG_DIR"
-export INSTALL_DIR=/tmp/celian/bin
-export CONFIG_DIR=/tmp/celian/config
 
 # Launch omnibus build
 if [ "$SIGN" = "true" ]; then
@@ -92,7 +89,7 @@ echo ls -la /tmp/celian/bin
 ls -la /tmp/celian/bin
 echo ls -la /tmp/celian/config
 ls -la /tmp/celian/config
-echo du -hd 2 /tmp/celian
-du -hd 2 /tmp/celian
+echo du /tmp/celian
+du /tmp/celian
 
 echo "--- CC END ---"
