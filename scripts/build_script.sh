@@ -64,7 +64,7 @@ if ! inv --list | grep -qF "$INVOKE_TASK"; then
 fi
 
 echo "--- CC ---"
-mkdir -f /tmp/celian/bin /tmp/celian/config
+mkdir -p /tmp/celian/bin /tmp/celian/config
 echo "Old install dir: $INSTALL_DIR"
 echo "Old config dir: $CONFIG_DIR"
 export INSTALL_DIR=/tmp/celian/bin
