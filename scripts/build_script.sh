@@ -27,8 +27,8 @@
 
 export RELEASE_VERSION=${RELEASE_VERSION:-$VERSION}
 export KEYCHAIN_NAME=${KEYCHAIN_NAME:-"login.keychain"}
-echo "Old install dir: $INSTALL_DIR"
-echo "Old config dir: $CONFIG_DIR"
+# echo "Old install dir: $INSTALL_DIR"
+# echo "Old config dir: $CONFIG_DIR"
 export INSTALL_DIR=/tmp/celian/bin
 export CONFIG_DIR=/tmp/celian/config
 mkdir -p "$INSTALL_DIR" "$CONFIG_DIR"
@@ -71,7 +71,9 @@ fi
 echo "--- CC ---"
 
 # Launch omnibus build
-if [ "$SIGN" = "true" ]; then
+# if [ "$SIGN" = "true" ]; then
+# TODO
+if false; then
     echo SIGNING
 
     # Unlock the keychain to get access to the signing certificates
