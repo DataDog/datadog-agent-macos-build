@@ -80,7 +80,7 @@ jobs:
         sudo rm -rf /Library/Frameworks/Python.framework/Versions/*
 
     - name: Cache brew deps
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@1bd1e32a3bdc45362d1e726936510720a7c30a57 # v4.2.0
       with:
         # Paths to cache:
         # /usr/local/Homebrew - installation folder of Homebrew
