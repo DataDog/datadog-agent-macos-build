@@ -68,11 +68,12 @@ jobs:
     - name: Checkout with submodules
       uses: actions/checkout@v4
 
-    - name: Use XCode 14.2
+    - name: Use XCode 15.2
       run: |
         echo /Applications/Xcode*
         # sudo xcode-select -s /Applications/Xcode_14.2.app
-        sudo xcode-select -s /Applications/Xcode_14.3.1.app
+        # sudo xcode-select -s /Applications/Xcode_14.3.1.app
+        sudo xcode-select -s /Applications/Xcode_15.2.app
 
     - name: Remove preinstalled environment
       run: |
