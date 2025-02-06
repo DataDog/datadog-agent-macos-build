@@ -77,6 +77,14 @@ jobs:
 
     - name: Remove preinstalled environment
       run: |
+        echo 'DEBUG: Before removing preinstalled environment'
+        echo -- "--- CC DEBUG ---"
+        echo Brew packages
+        brew list --formula || true
+        echo libintl
+        sudo find /usr -name "libintl*" || true
+        sudo find /opt -name "libintl*" || true
+        echo -- "--- END CC DEBUG ---"
         # The base box ships a few things that can have unwanted effects on the MacOS build.
         # For instance, we compile Python in the pipeline. If Python finds some libraries while
         # it's being compiled, then it will add a dynamic link to them and add some features.
