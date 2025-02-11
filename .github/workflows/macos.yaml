@@ -66,7 +66,7 @@ jobs:
         shell: bash
     steps:
     - name: Checkout with submodules
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
     - name: Use XCode 14.2
       run: |
@@ -214,7 +214,7 @@ jobs:
         bash ./scripts/build_script.sh
 
     - name: Upload Agent .dmg
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
       with:
         name: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}-dmg
         path: |
@@ -222,7 +222,7 @@ jobs:
         if-no-files-found: error
 
     - name: Upload Omnibus version manifest
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
       with:
         name: version-manifest.json
         path: |
