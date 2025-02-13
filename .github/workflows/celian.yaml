@@ -112,7 +112,12 @@ jobs:
 
         # In order to avoid such cases in the future where we use things we didn't expect to, we'd rather
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
-        brew remove --force --ignore-dependencies $(brew list --formula)
+        # brew remove --force --ignore-dependencies $(brew list --formula)
+        brew remove --force --ignore-dependencies --formula aria2
+        brew remove --force --ignore-dependencies --formula git
+        brew remove --force --ignore-dependencies --formula libidn2
+        brew remove --force --ignore-dependencies --formula wget
+        brew remove --force --ignore-dependencies --formula gettext
 
         # Also completely remove the ruby env, otherwise some files remain after the formula uninstall,
         # possibly causing gem version mismatch issues (eg. bundler).
