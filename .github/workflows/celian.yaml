@@ -1,55 +1,7 @@
 name: Celian Test
 
-# Workflow inputs default values are set here instead of using the `defaults` keyword
-# so that the `pull_request` event can access them.
-#
-# Leaving an input empty will use the default value
-env:
-  DEFAULT_DATADOG_AGENT_REF: 'main'
-  DEFAULT_RELEASE_VERSION: 'nightly-a7'
-  DEFAULT_AGENT_MAJOR_VERSION: '7'
-  DEFAULT_PYTHON_RUNTIMES: '3'
-  DEFAULT_BUCKET_BRANCH: 'nightly'
-  DEFAULT_GITLAB_PIPELINE_ID: '0'
-
 on:
-  pull_request:
-  workflow_dispatch:
-    inputs:
-      id:
-        description: 'run identifier'
-        required: false
-      datadog_agent_ref:
-        description: 'git ref to target on datadog-agent'
-        required: false
-      release_version:
-        description: 'release.json version to target'
-        required: false
-      agent_major_version:
-        description: 'Major version of the Agent to build'
-        required: false
-      python_runtimes:
-        description: 'Included python runtimes in the build'
-        required: false
-      bucket_branch:
-        description: 'Release branch we are building for'
-        required: false
-      gitlab_pipeline_id:
-        description: 'ID of Gitlab pipeline that triggered this build'
-        required: false
-      version_cache:
-        description: 'Base 64-encoded content of the agent-version.cache file'
-        required: false
-      integrations_core_ref:
-        description: 'git ref to target on integrations-core'
-        required: false
-      concurrency_key:
-        description: 'concurrency key used to cancel running jobs'
-        required: false
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.inputs.concurrency_key || github.event.inputs.datadog_agent_ref || github.sha }}
-  cancel-in-progress: ${{ github.event.inputs.concurrency_key && true || false }}
+  push
 
 jobs:
   celian-git-reinstall:
@@ -78,7 +30,7 @@ jobs:
         # /usr/local/Cellar/git/2.48.0/bin/git --help
         # brew reinstall git --force
 
-  celian:
+  celian-git-build:
     runs-on: macos-13
     defaults:
       run:
