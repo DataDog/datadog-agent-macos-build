@@ -38,8 +38,9 @@ jobs:
     steps:
     - name: Build git
       run: |
+        # TODO: Remove gettext
         GIT_VERSION=2.48.1
-        curl -O https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
+        curl -LO https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
         ls
         echo file: *.tar.gz
         tar -xzf *.tar.gz
@@ -48,7 +49,7 @@ jobs:
         ls
 
         make configure
-        ./configure --without-gettext
+        ./configure
         echo Configured
 
         ls
