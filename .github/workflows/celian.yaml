@@ -72,7 +72,9 @@ jobs:
       run: |
         GIT_VERSION=2.48.1
         curl -O https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
+        ls
         tar -xzf v${GIT_VERSION}.tar.gz
+        ls
         cd git-${GIT_VERSION}
         ls
 
