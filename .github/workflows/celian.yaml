@@ -60,14 +60,16 @@ jobs:
     steps:
     - name: Remove preinstalled environment
       run: |
-        brew remove --force --ignore-dependencies $(brew list --formula)
+        brew install git
 
-        echo CELIAN which git by default
-        which git
-        rm -rf /usr/bin/git
-        brew install git --ignore-dependencies || true
+        # brew remove --force --ignore-dependencies $(brew list --formula)
 
-        echo CELIAN which git by brew
-        which git
-        git --help
-        git clone https://github.com/DataDog/datadog-agent.git /tmp/dd-agent
+        # echo CELIAN which git by default
+        # which git
+        # rm -rf /usr/bin/git
+        # brew install git --ignore-dependencies || true
+
+        # echo CELIAN which git by brew
+        # which git
+        # git --help
+        # git clone https://github.com/DataDog/datadog-agent.git /tmp/dd-agent
