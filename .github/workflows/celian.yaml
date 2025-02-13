@@ -52,6 +52,16 @@ concurrency:
   cancel-in-progress: ${{ github.event.inputs.concurrency_key && true || false }}
 
 jobs:
+  celian-git-reinstall:
+    runs-on: macos-13
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - name: Build git
+      run: |
+        brew reinstall git --force
+
   celian:
     runs-on: macos-13
     defaults:
