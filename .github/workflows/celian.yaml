@@ -14,7 +14,7 @@ jobs:
       run: |
         which git
         brew remove --force --ignore-dependencies gettext
-        brew reinstall git --ignore-dependencies
+        brew reinstall git
         which git
         git --help
         # brew reinstall git --force
@@ -52,6 +52,9 @@ jobs:
 
         make all
         echo Built
+
+        ls -l git || true
+        otool -L git || true
 
         sudo make install
         echo Installed
