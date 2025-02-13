@@ -52,14 +52,7 @@ concurrency:
   cancel-in-progress: ${{ github.event.inputs.concurrency_key && true || false }}
 
 jobs:
-  id:
-    name: Workflow ID Provider
-    runs-on: ubuntu-latest
-    steps:
-      - name: ${{github.event.inputs.id}}
-        run: echo run identifier ${{ inputs.id }}
-
-  macos_build:
+  celian:
     runs-on: macos-13
     defaults:
       run:
@@ -69,10 +62,12 @@ jobs:
       run: |
         brew remove --force --ignore-dependencies $(brew list --formula)
 
-        brew uninstall git
+        echo CELIAN which git by default
+        which git
+        rm -rf /usr/bin/git
         brew install git --ignore-dependencies || true
 
-        echo CELIAN which git
+        echo CELIAN which git by brew
         which git
         git --help
         git clone https://github.com/DataDog/datadog-agent.git /tmp/dd-agent
