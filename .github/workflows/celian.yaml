@@ -4,60 +4,60 @@ on:
   push
 
 jobs:
-  celian-git-reinstall:
-    runs-on: macos-13
-    defaults:
-      run:
-        shell: bash
-    steps:
-    - name: Reinstall git
-      run: |
-        which git
-        brew remove --force --ignore-dependencies gettext
-        brew reinstall git
-        which git
-        git --help
-        # brew reinstall git --force
-        # which git
-        # git --help
-        # /usr/local/Cellar/git/2.48.0/bin/git --help
-        # brew uninstall git --ignore-dependencies --force
-        # which git || true
-        # git --help || true
-        # brew uninstall gettext --ignore-dependencies --force
-        # which git || true
-        # git --help || true
-        # /usr/local/Cellar/git/2.48.0/bin/git --help
-        # brew reinstall git --force
+  # celian-git-reinstall:
+  #   runs-on: macos-13
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #   - name: Reinstall git
+  #     run: |
+  #       which git
+  #       brew remove --force --ignore-dependencies gettext
+  #       brew reinstall git
+  #       which git
+  #       git --help
+  #       # brew reinstall git --force
+  #       # which git
+  #       # git --help
+  #       # /usr/local/Cellar/git/2.48.0/bin/git --help
+  #       # brew uninstall git --ignore-dependencies --force
+  #       # which git || true
+  #       # git --help || true
+  #       # brew uninstall gettext --ignore-dependencies --force
+  #       # which git || true
+  #       # git --help || true
+  #       # /usr/local/Cellar/git/2.48.0/bin/git --help
+  #       # brew reinstall git --force
 
-  celian-git-build:
-    runs-on: macos-13
-    defaults:
-      run:
-        shell: bash
-    steps:
-    - name: Build git
-      run: |
-        # TODO: Remove gettext
-        brew remove --force --ignore-dependencies gettext
+  # celian-git-build:
+  #   runs-on: macos-13
+  #   defaults:
+  #     run:
+  #       shell: bash
+  #   steps:
+  #   - name: Build git
+  #     run: |
+  #       # TODO: Remove gettext
+  #       brew remove --force --ignore-dependencies gettext
 
-        GIT_VERSION=2.48.1
-        curl -LO https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
-        tar -xzf v${GIT_VERSION}.tar.gz
-        cd git-${GIT_VERSION}
+  #       GIT_VERSION=2.48.1
+  #       curl -LO https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
+  #       tar -xzf v${GIT_VERSION}.tar.gz
+  #       cd git-${GIT_VERSION}
 
-        make configure
-        ./configure
-        echo Configured
+  #       make configure
+  #       ./configure
+  #       echo Configured
 
-        make all
-        echo Built
+  #       make all
+  #       echo Built
 
-        ls -l git || true
-        otool -L git || true
+  #       ls -l git || true
+  #       otool -L git || true
 
-        # sudo make install
-        # echo Installed
+  #       # sudo make install
+  #       # echo Installed
 
 
     # - name: Remove preinstalled environment
@@ -112,12 +112,12 @@ jobs:
 
         # In order to avoid such cases in the future where we use things we didn't expect to, we'd rather
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
-        # brew remove --force --ignore-dependencies $(brew list --formula)
-        brew remove --force --ignore-dependencies --formula aria2
-        brew remove --force --ignore-dependencies --formula git
-        brew remove --force --ignore-dependencies --formula libidn2
-        brew remove --force --ignore-dependencies --formula wget
-        brew remove --force --ignore-dependencies --formula gettext
+        brew remove --force --ignore-dependencies $(brew list --formula | grep -vE 'gcc|autoconf|curl')
+        # brew remove --force --ignore-dependencies --formula aria2
+        # brew remove --force --ignore-dependencies --formula git
+        # brew remove --force --ignore-dependencies --formula libidn2
+        # brew remove --force --ignore-dependencies --formula wget
+        # brew remove --force --ignore-dependencies --formula gettext
 
         # Also completely remove the ruby env, otherwise some files remain after the formula uninstall,
         # possibly causing gem version mismatch issues (eg. bundler).
@@ -132,14 +132,14 @@ jobs:
         tar -xzf v${GIT_VERSION}.tar.gz
         cd git-${GIT_VERSION}
 
-        make configure
+        make configure -j 4
         ./configure
         echo Configured
 
-        make all
+        make all -j 4
         echo Built
 
-        sudo make install
+        sudo make install -j 4
         echo Installed
 
         which git
