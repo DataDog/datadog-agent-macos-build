@@ -33,16 +33,16 @@ python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${D
 deva -v self dep sync -f legacy-tasks -f legacy-github
 
 # Install dependencies
-deva inv -e install-tools
-deva inv -e deps
+inv -e install-tools
+inv -e deps
 
 # Run rtloader test
-deva inv -e rtloader.make
-deva inv -e rtloader.install
+inv -e rtloader.make
+inv -e rtloader.install
 # FIXME: rtloader tests fail on Mac with "image not found" errors
 #inv -e rtloader.test
 
-deva inv -e agent.build
+inv -e agent.build
 
 FAST_TESTS_FLAG=""
 if [ "$FAST_TESTS" = "true" ]; then FAST_TESTS_FLAG="--only-impacted-packages"; fi
@@ -51,10 +51,10 @@ TEST_WASHER_FLAG=""
 if [ "$TEST_WASHER" = "true" ]; then TEST_WASHER_FLAG="--test-washer"; fi
 
 # Run unit tests
-deva inv -e test --rerun-fails=2 --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
+inv -e test --rerun-fails=2 --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
 
 # Run invoke task tests
-deva inv -e invoke-unit-tests.run
+inv -e invoke-unit-tests.run
 
 # Upload coverage reports to Codecov. Never fail on coverage upload.
-deva inv -e codecov || true
+inv -e codecov || true
