@@ -56,6 +56,32 @@ function do_with_retries() {
     return $res
 }
 
+
+
+
+
+
+ndebug=0
+
+debug()
+{
+    ndebug=$((ndebug+1))
+    echo -- "--- CC DEBUG $ndebug ---"
+    echo Brew packages
+    brew list --formula || true
+    echo libintl
+    sudo find /usr -name "libintl*" || true
+    sudo find /opt -name "libintl*" || true
+    echo -- "--- END CC DEBUG ---"
+}
+
+echo "DEBUG: Before install"
+debug
+
+
+
+
+
 # Install or upgrade brew (will also install Command Line Tools)
 
 # NOTE: The macOS runner has HOMEBREW_NO_INSTALL_FROM_API set, which makes it
@@ -70,6 +96,9 @@ brew untap --force homebrew/cask
 rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
 
 do_with_retries "CI=1; unset HOMEBREW_NO_INSTALL_FROM_API; $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" 5
+
+echo "DEBUG: After brew install"
+debug
 
 # Add our custom repository
 brew tap DataDog/datadog-agent-macos-build
@@ -102,8 +131,11 @@ rm codecov.SHA256SUM.sig codecov.SHA256SUM
 mv codecov /usr/local/bin/codecov
 chmod +x /usr/local/bin/codecov
 
+echo "DEBUG: Before openssl install"
+debug
+
 # Install openssl
-# Homebrew disabled the ability to install openssl@1.1 
+# Homebrew disabled the ability to install openssl@1.1
 # so we need to install it from our tap
 brew install DataDog/datadog-agent-macos-build/openssl@${OPENSSL_VERSION} -f
 brew link --overwrite openssl@${OPENSSL_VERSION}
@@ -113,6 +145,9 @@ brew install DataDog/datadog-agent-macos-build/ruby@$RUBY_VERSION -f
 brew link --overwrite ruby@$RUBY_VERSION
 
 gem install bundler -v $BUNDLER_VERSION -f
+
+echo "DEBUG: Before python install"
+debug
 
 # Install python
 # "brew link --overwrite" will refuse to overwrite links it doesn't own,
@@ -140,3 +175,6 @@ brew install DataDog/datadog-agent-macos-build/gimme@$GIMME_VERSION -f
 brew link --overwrite gimme@$GIMME_VERSION
 eval `gimme $GO_VERSION`
 echo 'eval `gimme '$GO_VERSION'`' >> ~/.build_setup
+
+echo "DEBUG: After all installs"
+debug

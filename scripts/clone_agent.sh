@@ -52,4 +52,5 @@ cd $GOPATH/src/github.com/DataDog/datadog-agent
 
 # Checkout to correct version
 git_with_retries pull
-git_with_retries checkout "$VERSION"
+# git_with_retries checkout "$VERSION"
+git_with_retries checkout celian/build-macos-gitlabci-acix-550

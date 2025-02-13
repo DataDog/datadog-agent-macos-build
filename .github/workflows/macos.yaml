@@ -68,12 +68,23 @@ jobs:
     - name: Checkout with submodules
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-    - name: Use XCode 14.2
+    - name: Use XCode 15.2
       run: |
-        sudo xcode-select -s /Applications/Xcode_14.2.app
+        echo /Applications/Xcode*
+        # sudo xcode-select -s /Applications/Xcode_14.2.app
+        # sudo xcode-select -s /Applications/Xcode_14.3.1.app
+        sudo xcode-select -s /Applications/Xcode_15.2.app
 
     - name: Remove preinstalled environment
       run: |
+        echo 'DEBUG: Before removing preinstalled environment'
+        echo -- "--- CC DEBUG ---"
+        echo Brew packages
+        brew list --formula || true
+        echo Searching libintl
+        sudo find /usr -name "libintl*" || true
+        sudo find /opt -name "libintl*" || true
+        echo -- "--- END CC DEBUG ---"
         # The base box ships a few things that can have unwanted effects on the MacOS build.
         # For instance, we compile Python in the pipeline. If Python finds some libraries while
         # it's being compiled, then it will add a dynamic link to them and add some features.
@@ -211,6 +222,21 @@ jobs:
         if [ "${USE_CACHING_PROXY_RUBY}" = "true" ]; then export BUNDLE_MIRROR__RUBYGEMS__ORG=https://${ARTIFACTORY_USERNAME}:${ARTIFACTORY_TOKEN}@${ARTIFACTORY_URL}/${ARTIFACTORY_GEMS_PATH}; fi
         if [ "${USE_CACHING_PROXY_PYTHON}" = "true" ]; then export PIP_INDEX_URL=https://${ARTIFACTORY_USERNAME}:${ARTIFACTORY_TOKEN}@${ARTIFACTORY_URL}/${ARTIFACTORY_PYPI_PATH}; fi
         mkdir -p $GOMODCACHE
+        # echo "--- CC ---"
+        # echo "$(xcrun --find swift-stdlib-tool)" "$(xcrun --find bitcode_strip)"
+        # "$(xcrun --find swift-stdlib-tool)" --help
+        # echo
+        # sudo xcode-select -s /Applications/Xcode_14.2.app
+        # echo "$(xcrun --find swift-stdlib-tool)" "$(xcrun --find bitcode_strip)"
+        # "$(xcrun --find swift-stdlib-tool)" --help
+        # echo
+        # exit 1
+        # swift --version
+        # xcrun --version
+        # echo "$(xcrun --find swift-stdlib-tool)" "$(xcrun --find bitcode_strip)"
+        # "$(xcrun --find swift-stdlib-tool)" --version
+        # "$(xcrun --find bitcode_strip)" --version
+        # exit 1
         bash ./scripts/build_script.sh
 
     - name: Upload Agent .dmg
