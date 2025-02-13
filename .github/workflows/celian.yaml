@@ -58,18 +58,40 @@ jobs:
       run:
         shell: bash
     steps:
-    - name: Remove preinstalled environment
+    - name: Build git
       run: |
-        brew install git
+        GIT_VERSION=2.48.1
+        curl -O https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
+        tar -xzf v${GIT_VERSION}.tar.gz
+        cd git-${GIT_VERSION}
+        ls
 
-        # brew remove --force --ignore-dependencies $(brew list --formula)
+        make configure
+        ./configure --without-gettext
+        echo Configured
 
-        # echo CELIAN which git by default
-        # which git
-        # rm -rf /usr/bin/git
-        # brew install git --ignore-dependencies || true
+        ls
+        make all
 
-        # echo CELIAN which git by brew
-        # which git
-        # git --help
-        # git clone https://github.com/DataDog/datadog-agent.git /tmp/dd-agent
+        echo Built
+        ls
+
+        sudo make install
+        echo Installed
+
+
+    # - name: Remove preinstalled environment
+    #   run: |
+    #     # brew install git
+
+    #     # brew remove --force --ignore-dependencies $(brew list --formula)
+
+    #     # echo CELIAN which git by default
+    #     # which git
+    #     # rm -rf /usr/bin/git
+    #     # brew install git --ignore-dependencies || true
+
+    #     # echo CELIAN which git by brew
+    #     # which git
+    #     # git --help
+    #     # git clone https://github.com/DataDog/datadog-agent.git /tmp/dd-agent
