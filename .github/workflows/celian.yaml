@@ -58,8 +58,19 @@ jobs:
       run:
         shell: bash
     steps:
-    - name: Build git
+    - name: Reinstall git
       run: |
+        brew reinstall git --force
+        which git
+        git --help
+        /usr/local/Cellar/git/2.48.0/bin/git --help
+        brew uninstall git --ignore-dependencies --force
+        which git || true
+        git --help || true
+        brew uninstall gettext --ignore-dependencies --force
+        which git || true
+        git --help || true
+        /usr/local/Cellar/git/2.48.0/bin/git --help
         brew reinstall git --force
 
   celian:
