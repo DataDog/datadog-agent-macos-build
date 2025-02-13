@@ -39,24 +39,19 @@ jobs:
     - name: Build git
       run: |
         # TODO: Remove gettext
+        brew remove --force --ignore-dependencies gettext
+
         GIT_VERSION=2.48.1
         curl -LO https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
-        ls
-        echo file: *.tar.gz
-        tar -xzf *.tar.gz
-        ls
+        tar -xzf v${GIT_VERSION}.tar.gz
         cd git-${GIT_VERSION}
-        ls
 
         make configure
         ./configure
         echo Configured
 
-        ls
         make all
-
         echo Built
-        ls
 
         sudo make install
         echo Installed
