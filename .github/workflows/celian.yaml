@@ -60,18 +60,23 @@ jobs:
     steps:
     - name: Reinstall git
       run: |
-        brew reinstall git --force
+        which git
+        brew remove --force --ignore-dependencies gettext
+        brew reinstall git --ignore-dependencies
         which git
         git --help
-        /usr/local/Cellar/git/2.48.0/bin/git --help
-        brew uninstall git --ignore-dependencies --force
-        which git || true
-        git --help || true
-        brew uninstall gettext --ignore-dependencies --force
-        which git || true
-        git --help || true
-        /usr/local/Cellar/git/2.48.0/bin/git --help
-        brew reinstall git --force
+        # brew reinstall git --force
+        # which git
+        # git --help
+        # /usr/local/Cellar/git/2.48.0/bin/git --help
+        # brew uninstall git --ignore-dependencies --force
+        # which git || true
+        # git --help || true
+        # brew uninstall gettext --ignore-dependencies --force
+        # which git || true
+        # git --help || true
+        # /usr/local/Cellar/git/2.48.0/bin/git --help
+        # brew reinstall git --force
 
   celian:
     runs-on: macos-13
@@ -84,6 +89,7 @@ jobs:
         GIT_VERSION=2.48.1
         curl -O https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
         ls
+        echo file: *.tar.gz
         tar -xzf *.tar.gz
         ls
         cd git-${GIT_VERSION}
