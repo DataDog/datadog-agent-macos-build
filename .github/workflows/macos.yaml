@@ -81,7 +81,7 @@ jobs:
         echo -- "--- CC DEBUG ---"
         echo Brew packages
         brew list --formula || true
-        echo libintl
+        echo Searching libintl
         sudo find /usr -name "libintl*" || true
         sudo find /opt -name "libintl*" || true
         echo -- "--- END CC DEBUG ---"
@@ -102,6 +102,10 @@ jobs:
         rm -rf /usr/local/lib/ruby
         # Remove existing Python installation as it may otherwise interfere
         sudo rm -rf /Library/Frameworks/Python.framework/Versions/*
+
+        echo CELIAN which git
+        which git || true
+        git --help || true
 
     - name: Cache brew deps
       uses: actions/cache@v4.0.0
