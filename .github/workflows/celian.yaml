@@ -112,7 +112,8 @@ jobs:
 
         # In order to avoid such cases in the future where we use things we didn't expect to, we'd rather
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
-        brew remove --force --ignore-dependencies $(brew list --formula | grep -vE 'gcc|autoconf|curl')
+        brew remove --force --ignore-dependencies $(brew list --formula)
+        brew install autoconf curl gcc libnghttp2 ca-certificates
         # brew remove --force --ignore-dependencies --formula aria2
         # brew remove --force --ignore-dependencies --formula git
         # brew remove --force --ignore-dependencies --formula libidn2
@@ -124,6 +125,10 @@ jobs:
         rm -rf /usr/local/lib/ruby
         # Remove existing Python installation as it may otherwise interfere
         sudo rm -rf /Library/Frameworks/Python.framework/Versions/*
+
+        echo Verifying libintl
+        sudo find /usr -name "libintl*" || true
+        sudo find /opt -name "libintl*" || true
 
     - name: Custom git
       run: |
