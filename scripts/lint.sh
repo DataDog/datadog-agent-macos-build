@@ -33,8 +33,8 @@ python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${D
 deva -v self dep sync -f legacy-tasks
 
 # Install dependencies
-inv -e install-tools
-inv -e deps
+deva inv -e install-tools
+deva inv -e deps
 
 # Run go linters
-inv -e linter.go --cpus 4 --timeout 60
+deva inv -e linter.go --cpus 4 --timeout 60
