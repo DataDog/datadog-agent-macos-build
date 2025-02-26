@@ -7,7 +7,7 @@ name: MacOS Agent tests
 env:
   DEFAULT_DATADOG_AGENT_REF: 'main'
   DEFAULT_PYTHON_RUNTIMES: '3'
-  DEVA_NO_DYNAMIC_DEPS: '1'
+  DDA_NO_DYNAMIC_DEPS: '1'
 
 on:
   pull_request:

@@ -40,9 +40,9 @@ cd $GOPATH/src/github.com/DataDog/datadog-agent
 python3 -m venv .venv
 source .venv/bin/activate
 
-DEVA_VERSION="$(curl -s https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/main/deva.env | awk -F= '/^DEVA_VERSION=/ {print $2}')"
-python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${DEVA_VERSION}"
-deva -v self dep sync -f legacy-tasks
+DDA_VERSION="$(curl -s https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/main/dda.env | awk -F= '/^DDA_VERSION=/ {print $2}')"
+python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${DDA_VERSION}"
+dda -v self dep sync -f legacy-tasks
 
 # Clean up previous builds
 sudo rm -rf /opt/datadog-agent ./vendor ./vendor-new /var/cache/omnibus/src/* ./omnibus/Gemfile.lock
@@ -53,7 +53,7 @@ sudo mkdir -p /opt/datadog-agent /var/cache/omnibus && sudo chown "$USER" /opt/d
 # Set bundler install path to cached folder
 pushd omnibus && bundle config set --local path 'vendor/bundle' && popd
 
-deva inv check-go-version || exit 1
+dda inv check-go-version || exit 1
 
 # Update the INTEGRATION_CORE_VERSION if requested
 if [ -n "$INTEGRATIONS_CORE_REF" ]; then
@@ -61,7 +61,7 @@ if [ -n "$INTEGRATIONS_CORE_REF" ]; then
 fi
 
 INVOKE_TASK="omnibus.build"
-if ! deva inv --list | grep -qF "$INVOKE_TASK"; then
+if ! dda inv --list | grep -qF "$INVOKE_TASK"; then
     echo -e "\033[0;31magent.omnibus-build is deprecated. Please use omnibus.build!\033[0m"
     INVOKE_TASK="agent.omnibus-build"
 fi
@@ -70,9 +70,9 @@ fi
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
     security unlock-keychain -p "$KEYCHAIN_PWD" "$KEYCHAIN_NAME"
-    deva inv -e $INVOKE_TASK --hardened-runtime --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
+    dda inv -e $INVOKE_TASK --hardened-runtime --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
     # Lock the keychain once we're done
     security lock-keychain "$KEYCHAIN_NAME"
 else
-    deva inv -e $INVOKE_TASK --skip-sign --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
+    dda inv -e $INVOKE_TASK --skip-sign --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
 fi
