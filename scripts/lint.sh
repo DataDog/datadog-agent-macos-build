@@ -28,13 +28,13 @@ cd "$GOPATH"/src/github.com/DataDog/datadog-agent
 python3 -m venv .venv
 source .venv/bin/activate
 
-DEVA_VERSION="$(curl -s https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/main/deva.env | awk -F= '/^DEVA_VERSION=/ {print $2}')"
-python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${DEVA_VERSION}"
-deva -v self dep sync -f legacy-tasks
+DDA_VERSION="$(curl -s https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/main/dda.env | awk -F= '/^DDA_VERSION=/ {print $2}')"
+python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${DDA_VERSION}"
+dda -v self dep sync -f legacy-tasks
 
 # Install dependencies
-deva inv -e install-tools
-deva inv -e deps
+dda inv -e install-tools
+dda inv -e deps
 
 # Run go linters
-deva inv -e linter.go --cpus 4 --timeout 60
+dda inv -e linter.go --cpus 4 --timeout 60

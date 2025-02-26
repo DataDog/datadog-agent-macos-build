@@ -28,21 +28,21 @@ cd $GOPATH/src/github.com/DataDog/datadog-agent
 python3 -m venv .venv
 source .venv/bin/activate
 
-DEVA_VERSION="$(curl -s https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/main/deva.env | awk -F= '/^DEVA_VERSION=/ {print $2}')"
-python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${DEVA_VERSION}"
-deva -v self dep sync -f legacy-tasks -f legacy-github
+DDA_VERSION="$(curl -s https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/main/dda.env | awk -F= '/^DDA_VERSION=/ {print $2}')"
+python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${DDA_VERSION}"
+dda -v self dep sync -f legacy-tasks -f legacy-github
 
 # Install dependencies
-deva inv -e install-tools
-deva inv -e deps
+dda inv -e install-tools
+dda inv -e deps
 
 # Run rtloader test
-deva inv -e rtloader.make
-deva inv -e rtloader.install
+dda inv -e rtloader.make
+dda inv -e rtloader.install
 # FIXME: rtloader tests fail on Mac with "image not found" errors
 #inv -e rtloader.test
 
-deva inv -e agent.build
+dda inv -e agent.build
 
 FAST_TESTS_FLAG=""
 if [ "$FAST_TESTS" = "true" ]; then FAST_TESTS_FLAG="--only-impacted-packages"; fi
@@ -51,10 +51,10 @@ TEST_WASHER_FLAG=""
 if [ "$TEST_WASHER" = "true" ]; then TEST_WASHER_FLAG="--test-washer"; fi
 
 # Run unit tests
-deva inv -e test --rerun-fails=2 --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
+dda inv -e test --rerun-fails=2 --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
 
 # Run invoke task tests
-deva inv -e invoke-unit-tests.run
+dda inv -e invoke-unit-tests.run
 
 # Upload coverage reports to Codecov. Never fail on coverage upload.
-deva inv -e codecov || true
+dda inv -e codecov || true
