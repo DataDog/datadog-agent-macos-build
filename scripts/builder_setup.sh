@@ -30,16 +30,31 @@ source ~/.build_setup
 export PKG_CONFIG_VERSION=0.29.2
 export RUBY_VERSION=2.7.4
 export BUNDLER_VERSION=2.3.18
-export PYTHON_VERSION=3.9.6
+export PYTHON_VERSION=3.12.6
 export RUST_VERSION=1.74.0
 export RUSTUP_VERSION=1.25.1
-export CMAKE_VERSION=3.22.6
+export CMAKE_VERSION=3.30.2
 export GIMME_VERSION=1.5.4
+export GPG_VERSION=1.4.23
+export CODECOV_VERSION=v0.6.1
+export OPENSSL_VERSION=1.1
 
 export GO_VERSION=$(cat $GOPATH/src/github.com/DataDog/datadog-agent/.go-version)
-# Newer version of IBM_MQ have a different name
-export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
-#export IBM_MQ_VERSION=9.2.2.0-IBM-MQ-Toolkit
+
+# Helper to run a bash command with retries, with an exponential backoff.
+# Returns 1 if the provided command fails every time, 0 otherwise.
+function do_with_retries() {
+    local command="$1"
+    local retries="$2"
+    local res=0
+
+    for i in $(seq 0 $retries); do
+        res=0
+        sleep $((2**$i))
+        /bin/bash -c "$command" && break || res=1
+    done
+    return $res
+}
 
 # Install or upgrade brew (will also install Command Line Tools)
 
@@ -53,9 +68,8 @@ export IBM_MQ_VERSION=9.2.4.0-IBM-MQ-DevToolkit
 # avoiding the error.
 brew untap --force homebrew/cask
 rm -rf /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core
-unset HOMEBREW_NO_INSTALL_FROM_API
 
-CI=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+do_with_retries "CI=1; unset HOMEBREW_NO_INSTALL_FROM_API; $(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)" 5
 
 # Add our custom repository
 brew tap DataDog/datadog-agent-macos-build
@@ -71,6 +85,29 @@ brew link --overwrite cmake@$CMAKE_VERSION
 brew install DataDog/datadog-agent-macos-build/pkg-config@$PKG_CONFIG_VERSION -f
 brew link --overwrite pkg-config@$PKG_CONFIG_VERSION
 
+# Install gpg (depends on pkg-config)
+brew install DataDog/datadog-agent-macos-build/gnupg@$GPG_VERSION -f
+brew link --overwrite gnupg@$GPG_VERSION
+# Adding gpgbin to the PATH to be able to call gpg and gpgv
+export PATH="/usr/local/opt/gnupg@1.4.23/libexec/gpgbin:$PATH"
+
+# Install codecov
+curl https://uploader.codecov.io/verification.gpg | gpg --no-default-keyring --keyring trustedkeys.gpg --import
+curl -Os https://uploader.codecov.io/$CODECOV_VERSION/macos/codecov
+curl -Os https://uploader.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM
+curl -Os https://uploader.codecov.io/$CODECOV_VERSION/macos/codecov.SHA256SUM.sig
+gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
+shasum -a 256 -c codecov.SHA256SUM
+rm codecov.SHA256SUM.sig codecov.SHA256SUM
+mv codecov /usr/local/bin/codecov
+chmod +x /usr/local/bin/codecov
+
+# Install openssl
+# Homebrew disabled the ability to install openssl@1.1 
+# so we need to install it from our tap
+brew install DataDog/datadog-agent-macos-build/openssl@${OPENSSL_VERSION} -f
+brew link --overwrite openssl@${OPENSSL_VERSION}
+
 # Install ruby (depends on pkg-config)
 brew install DataDog/datadog-agent-macos-build/ruby@$RUBY_VERSION -f
 brew link --overwrite ruby@$RUBY_VERSION
@@ -81,13 +118,15 @@ gem install bundler -v $BUNDLER_VERSION -f
 # "brew link --overwrite" will refuse to overwrite links it doesn't own,
 # so we have to make sure these don't exist
 # see: https://github.com/actions/setup-python/issues/577
-rm -f /usr/local/bin/2to3 \
-      /usr/local/bin/idle3 \
-      /usr/local/bin/pydoc3 \
-      /usr/local/bin/python3 \
-      /usr/local/bin/python3-config
-brew install DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
+rm -f /usr/local/bin/2to3* \
+      /usr/local/bin/idle3* \
+      /usr/local/bin/pydoc3* \
+      /usr/local/bin/python3* \
+      /usr/local/bin/python3*-config
+brew install --build-from-source DataDog/datadog-agent-macos-build/python@$PYTHON_VERSION -f
 brew link --overwrite python@$PYTHON_VERSION
+# Put homebrew Python ahead of system Python
+echo 'export PATH="/usr/local/opt/python@'"${PYTHON_VERSION}"'/libexec/bin:$PATH"' >> ~/.build_setup
 
 # Install rust
 # Rust may be needed to compile some python libs
@@ -101,9 +140,3 @@ brew install DataDog/datadog-agent-macos-build/gimme@$GIMME_VERSION -f
 brew link --overwrite gimme@$GIMME_VERSION
 eval `gimme $GO_VERSION`
 echo 'eval `gimme '$GO_VERSION'`' >> ~/.build_setup
-
-# Install IBM MQ
-sudo mkdir -p /opt/mqm
-curl --retry 5 --fail "https://s3.amazonaws.com/dd-agent-omnibus/ibm-mq-backup/${IBM_MQ_VERSION}-MacX64.pkg" -o /tmp/mq_client.pkg
-sudo installer -pkg /tmp/mq_client.pkg -target /
-sudo rm -rf /tmp/mq_client.pkg

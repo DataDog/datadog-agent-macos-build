@@ -7,6 +7,7 @@ name: MacOS Agent tests
 env:
   DEFAULT_DATADOG_AGENT_REF: 'main'
   DEFAULT_PYTHON_RUNTIMES: '3'
+  DDA_NO_DYNAMIC_DEPS: '1'
 
 on:
   pull_request:
@@ -33,6 +34,9 @@ on:
       fast_tests:
         description: 'Boolean to enable fast unit tests'
         required: false
+      test_washer:
+        description: 'Boolean to enable test washer'
+        required: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.inputs.concurrency_key || github.event.inputs.datadog_agent_ref || github.sha }}
@@ -47,19 +51,19 @@ jobs:
         run: echo run identifier ${{ inputs.id }}
 
   macos_test:
-    runs-on: macos-11
+    runs-on: macos-13
     defaults:
       run:
         shell: bash
     steps:
     - name: Checkout with submodules
-      uses: actions/checkout@v4
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
-    - name: Use XCode 13.2
+    - name: Use XCode 14.2
       run: |
-        sudo xcode-select -s /Applications/Xcode_13.2.app
+        sudo xcode-select -s /Applications/Xcode_14.2.app
 
-    - name: Remove preinstalled brew packages
+    - name: Remove preinstalled environment
       run: |
         # The base box ships a few things that can have unwanted effects on the MacOS build.
         # For instance, we compile Python in the pipeline. If Python finds some libraries while
@@ -73,22 +77,25 @@ jobs:
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
         brew remove --force --ignore-dependencies $(brew list --formula)
 
+        # Remove existing Python installation as it may otherwise interfere
+        sudo rm -rf /Library/Frameworks/Python.framework/Versions/*
+
     - name: Cache brew deps
-      uses: actions/cache@v4.0.0
+      uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf # v4.2.2
       with:
         # Paths to cache:
         # /usr/local/Homebrew - installation folder of Homebrew
         # /usr/local/Cellar - installation folder of Homebrew formulae
         # /usr/local/Frameworks, /usr/local/bin, /usr/local/opt - contain (links to) binaries installed by Homebrew formulae
-        # /usr/local/lib/python3.9 - Python3 packages installation
+        # /usr/local/lib/python3.12 - Python3 packages installation
         path: |
           /usr/local/Homebrew
           /usr/local/Cellar
           /usr/local/Frameworks
           /usr/local/bin
           /usr/local/opt
-          /usr/local/lib/python3.9
-        key: macos-11-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
+          /usr/local/lib/python3.12
+        key: macos-13-build-cache-${{ hashFiles('./scripts/builder_setup.sh') }}
 
     - name: Clone datadog-agent repository
       env:
@@ -97,7 +104,7 @@ jobs:
         bash ./scripts/clone_agent.sh
         cd $HOME/go/src/github.com/DataDog/datadog-agent
         export VERSION_CACHE_CONTENT="${{github.event.inputs.version_cache}}"
-        if [ ! -z "$VERSION_CACHE_CONTENT" ]; then base64 -d <(echo "$VERSION_CACHE_CONTENT") > ./agent-version.cache; fi
+        if [ ! -z "$VERSION_CACHE_CONTENT" ]; then echo "$VERSION_CACHE_CONTENT" | base64 -d > ./agent-version.cache; fi
 
     - name: Set up builder
       run: |
@@ -106,6 +113,7 @@ jobs:
     - name: Run tests
       env:
         FAST_TESTS: ${{ github.event.inputs.fast_tests || 'false' }}
+        TEST_WASHER: ${{ github.event.inputs.test_washer || 'false' }}
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
         PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes || env.DEFAULT_PYTHON_RUNTIMES }}
         GO_TEST_SKIP_FLAKE: ${{ github.event.inputs.go_test_skip_flake || 'true' }}
@@ -115,7 +123,7 @@ jobs:
         bash ./scripts/test_script.sh
 
     - name: Upload unit test reports
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
       if: "${{ always() }}"
       with:
         name: junit-files
