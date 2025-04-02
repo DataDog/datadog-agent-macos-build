@@ -102,14 +102,14 @@ jobs:
 
     - name: Remove preinstalled environment
       run: |
-        echo 'DEBUG: Before removing preinstalled environment'
-        echo -- "--- CC DEBUG ---"
-        echo Brew packages
-        brew list --formula || true
-        echo Searching libintl
-        sudo find /usr -name "libintl*" || true
-        sudo find /opt -name "libintl*" || true
-        echo -- "--- END CC DEBUG ---"
+        # echo 'DEBUG: Before removing preinstalled environment'
+        # echo -- "--- CC DEBUG ---"
+        # echo Brew packages
+        # brew list --formula || true
+        # echo Searching libintl
+        # sudo find /usr -name "libintl*" || true
+        # sudo find /opt -name "libintl*" || true
+        # echo -- "--- END CC DEBUG ---"
         # The base box ships a few things that can have unwanted effects on the MacOS build.
         # For instance, we compile Python in the pipeline. If Python finds some libraries while
         # it's being compiled, then it will add a dynamic link to them and add some features.
@@ -121,7 +121,7 @@ jobs:
         # In order to avoid such cases in the future where we use things we didn't expect to, we'd rather
         # start with a "clean" runner with the bare minimum, and only install the brew packages we require.
         brew remove --force --ignore-dependencies $(brew list --formula)
-        brew install autoconf curl gcc libnghttp2 ca-certificates
+        # brew install autoconf curl gcc libnghttp2 ca-certificates
         # brew remove --force --ignore-dependencies --formula aria2
         # brew remove --force --ignore-dependencies --formula git
         # brew remove --force --ignore-dependencies --formula libidn2
@@ -134,34 +134,34 @@ jobs:
         # Remove existing Python installation as it may otherwise interfere
         sudo rm -rf /Library/Frameworks/Python.framework/Versions/*
 
-        echo Verifying libintl
-        sudo find /usr -name "libintl*" || true
-        sudo find /opt -name "libintl*" || true
+        # echo Verifying libintl
+        # sudo find /usr -name "libintl*" || true
+        # sudo find /opt -name "libintl*" || true
 
-    - name: Custom git
-      run: |
-        GIT_VERSION=2.48.1
-        curl -LO https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
-        tar -xzf v${GIT_VERSION}.tar.gz
-        cd git-${GIT_VERSION}
+    # - name: Custom git
+    #   run: |
+    #     GIT_VERSION=2.48.1
+    #     curl -LO https://github.com/git/git/archive/refs/tags/v${GIT_VERSION}.tar.gz
+    #     tar -xzf v${GIT_VERSION}.tar.gz
+    #     cd git-${GIT_VERSION}
 
-        make configure -j 4
-        ./configure
-        echo Configured
+    #     make configure -j 4
+    #     ./configure
+    #     echo Configured
 
-        make all -j 4
-        echo Built
+    #     make all -j 4
+    #     echo Built
 
-        sudo make install -j 4
-        echo Installed
+    #     sudo make install -j 4
+    #     echo Installed
 
-        which git
+    #     which git
 
-    - name: Search libintl
-      run: |
-        echo Searching libintl
-        sudo find /usr -name "libintl*" || true
-        sudo find /opt -name "libintl*" || true
+    # - name: Search libintl
+    #   run: |
+    #     echo Searching libintl
+    #     sudo find /usr -name "libintl*" || true
+    #     sudo find /opt -name "libintl*" || true
 
     - name: Cache brew deps
       uses: actions/cache@v4.0.0
@@ -277,6 +277,7 @@ jobs:
         ARTIFACTORY_GEMS_PATH: artifactory/api/gems/agent-gems
         ARTIFACTORY_PYPI_PATH: artifactory/api/pypi/agent-pypi/simple
         INTEGRATIONS_CORE_REF: ${{ github.event.inputs.integrations_core_ref }}
+        OMNIBUS_RUBY_VERSION: celian/macos-build
       run: |
         export GOMODCACHE=~/gomodcache
         if [ "${USE_CACHING_PROXY_RUBY}" = "true" ]; then export BUNDLE_MIRROR__RUBYGEMS__ORG=https://${ARTIFACTORY_USERNAME}:${ARTIFACTORY_TOKEN}@${ARTIFACTORY_URL}/${ARTIFACTORY_GEMS_PATH}; fi
