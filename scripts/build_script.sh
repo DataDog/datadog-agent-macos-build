@@ -66,6 +66,9 @@ if ! dda inv --list | grep -qF "$INVOKE_TASK"; then
     INVOKE_TASK="agent.omnibus-build"
 fi
 
+echo "Omnibus base: $OMNIBUS_BASE_DIR"
+echo "Omnibus package path: $OMNIBUS_PACKAGE_DIR"
+
 # Launch omnibus build
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
@@ -76,3 +79,5 @@ if [ "$SIGN" = "true" ]; then
 else
     dda inv -e $INVOKE_TASK --skip-sign --major-version "$AGENT_MAJOR_VERSION" --release-version "$RELEASE_VERSION" || exit 1
 fi
+
+ls ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg
