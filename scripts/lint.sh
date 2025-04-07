@@ -28,7 +28,7 @@ cd "$GOPATH"/src/github.com/DataDog/datadog-agent
 python3 -m venv .venv
 source .venv/bin/activate
 
-DDA_VERSION="$(curl -s https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/main/dda.env | awk -F= '/^DDA_VERSION=/ {print $2}')"
+DDA_VERSION="$(curl -s https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/refs/heads/7.65.x/dda.env | awk -F= '/^DDA_VERSION=/ {print $2}')"
 python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${DDA_VERSION}"
 dda -v self dep sync -f legacy-tasks
 
