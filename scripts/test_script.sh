@@ -51,7 +51,7 @@ TEST_WASHER_FLAG=""
 if [ "$TEST_WASHER" = "true" ]; then TEST_WASHER_FLAG="--test-washer"; fi
 
 # Run unit tests
-dda inv -e test --rerun-fails=2 --race --profile --cpus 4 --save-result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
+dda inv -e test --rerun-fails=2 --race --profile --cpus 4 --result-json "test_output.json" --junit-tar "junit-tests_macos.tgz" $FAST_TESTS_FLAG $TEST_WASHER_FLAG
 
 # Run invoke task tests
 dda inv -e invoke-unit-tests.run

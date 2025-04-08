@@ -6,7 +6,7 @@ name: MacOS Agent build
 # Leaving an input empty will use the default value
 env:
   DEFAULT_DATADOG_AGENT_REF: 'main'
-  DEFAULT_RELEASE_VERSION: 'nightly-a7'
+  DEFAULT_RELEASE_VERSION: 'nightly'
   DEFAULT_AGENT_MAJOR_VERSION: '7'
   DEFAULT_PYTHON_RUNTIMES: '3'
   DEFAULT_BUCKET_BRANCH: 'nightly'
