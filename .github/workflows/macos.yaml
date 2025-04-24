@@ -22,7 +22,6 @@ on:
       datadog_agent_ref:
         description: 'git ref to target on datadog-agent'
         required: false
-        required: false
       agent_major_version:
         description: 'Major version of the Agent to build'
         required: false
