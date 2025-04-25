@@ -6,7 +6,6 @@ name: MacOS Agent build
 # Leaving an input empty will use the default value
 env:
   DEFAULT_DATADOG_AGENT_REF: 'main'
-  DEFAULT_RELEASE_VERSION: 'nightly'
   DEFAULT_AGENT_MAJOR_VERSION: '7'
   DEFAULT_PYTHON_RUNTIMES: '3'
   DEFAULT_BUCKET_BRANCH: 'nightly'
@@ -22,9 +21,6 @@ on:
         required: false
       datadog_agent_ref:
         description: 'git ref to target on datadog-agent'
-        required: false
-      release_version:
-        description: 'release.json version to target'
         required: false
       agent_major_version:
         description: 'Major version of the Agent to build'
@@ -187,7 +183,6 @@ jobs:
     - name: Run omnibus build
       env:
         VERSION: ${{ github.event.inputs.datadog_agent_ref || env.DEFAULT_DATADOG_AGENT_REF }}
-        RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
         AGENT_MAJOR_VERSION: ${{ github.event.inputs.agent_major_version || env.DEFAULT_AGENT_MAJOR_VERSION }}
         PYTHON_RUNTIMES: ${{ github.event.inputs.python_runtimes || env.DEFAULT_PYTHON_RUNTIMES }}
         BUCKET_BRANCH: ${{ github.event.inputs.bucket_branch || env.DEFAULT_BUCKET_BRANCH }}
@@ -217,7 +212,7 @@ jobs:
     - name: Upload Agent .dmg
       uses: actions/upload-artifact@4cec3d8aa04e39d1a68397de0c4cd6fb9dce8ec1 # v4.6.1
       with:
-        name: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}-dmg
+        name: agent-dmg
         path: |
           ~/go/src/github.com/DataDog/datadog-agent/omnibus/pkg/*.dmg
         if-no-files-found: error
@@ -251,7 +246,6 @@ jobs:
     - name: Notarize build
       uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
       env:
-        RELEASE_VERSION: ${{ github.event.inputs.release_version || env.DEFAULT_RELEASE_VERSION }}
         APPLE_ACCOUNT: ${{ secrets.APPLE_ACCOUNT }}
         TEAM_ID: ${{ secrets.TEAM_ID }}
         NOTARIZATION_PWD: ${{ secrets.NOTARIZATION_PASSWORD }}
