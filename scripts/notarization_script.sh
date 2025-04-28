@@ -23,6 +23,8 @@
 # Load build setup vars
 source ~/.build_setup
 
+export RELEASE_VERSION=${RELEASE_VERSION:-$VERSION}
+
 unset LATEST_DMG
 
 # Find latest .dmg file in $GOPATH/src/github.com/Datadog/datadog-agent/omnibus/pkg
