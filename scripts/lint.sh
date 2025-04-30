@@ -23,16 +23,18 @@ cd "$GOPATH"/src/github.com/DataDog/datadog-agent
 # Install python deps (invoke, etc.)
 
 # Python 3.12 changes default behavior how packages are installed.
-# In particular, --break-system-packages command line option is 
+# In particular, --break-system-packages command line option is
 # required to use the old behavior or use a virtual env. https://github.com/actions/runner-images/issues/8615
 python3 -m venv .venv
 source .venv/bin/activate
-python3 -m pip install -r requirements.txt
+
+DDA_VERSION="$(curl -s https://raw.githubusercontent.com/DataDog/datadog-agent-buildimages/main/dda.env | awk -F= '/^DDA_VERSION=/ {print $2}')"
+python3 -m pip install "git+https://github.com/DataDog/datadog-agent-dev.git@${DDA_VERSION}"
+dda -v self dep sync -f legacy-tasks
 
 # Install dependencies
-inv -e install-tools
-inv -e deps
+dda inv -e install-tools
+dda inv -e deps
 
 # Run go linters
-inv -e linter.go --cpus 4 --timeout 60
-
+dda inv -e linter.go --cpus 4 --timeout 60
