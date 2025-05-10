@@ -130,4 +130,5 @@ jobs:
         path: |
           ~/go/src/github.com/DataDog/datadog-agent/test_output.json
           ~/go/src/github.com/DataDog/datadog-agent/junit-tests_macos.tgz
+          ~/go/src/github.com/DataDog/datadog-agent/junit-out-base.xml
         if-no-files-found: error
