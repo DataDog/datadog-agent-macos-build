@@ -64,6 +64,12 @@ if ! dda inv --list | grep -qF "$INVOKE_TASK"; then
     INVOKE_TASK="agent.omnibus-build"
 fi
 
+export OMNIBUS_GIT_CACHE_DIR=/tmp/omnibus-git-cache
+# We still want to leverage the remote cache for macOS
+# Work around the job being ran on github.
+CI_JOB_NAME_SLUG="agent-dmg-$(uname -m)-a7"
+export CI_JOB_NAME_SLUG
+
 # Launch omnibus build
 if [ "$SIGN" = "true" ]; then
     # Unlock the keychain to get access to the signing certificates
